@@ -1,0 +1,1328 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>ProjectMain</title><meta name="generator" content="MATLAB 9.9"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-04-28"><meta name="DC.source" content="ProjectMain.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">ECE 580 Project, Mathematical Model for Cubesat Attitude Sensors</a></li><li><a href="#2">Rotation Matrices for Roll, Pitch and Yaw</a></li><li><a href="#3">Calculate Flux Based on Spacecraft Orientation</a></li><li><a href="#4">Loop to Calculate Light Flux on All Diodes</a></li><li><a href="#5">Diode Response Curves Plot</a></li></ul></div><h2 id="1">ECE 580 Project, Mathematical Model for Cubesat Attitude Sensors</h2><p>-------------------------------------------------------------------------</p><p>Authors:  Sergio Ribeiro Date:     26-APR-2022 Class:    ECE 580 Small Satellite Design</p><p>-------------------------------------------------------------------------</p><p>The purpose of this project is to provide a mathematical model for a cubesat satellite attitude sensor system. The sensor system is a photodiode on each face of the cubesat. There are six sensors in all. The purpose of this program is to model the response of the photodiodes to the sunlight hitting the cubesat in different orientations. For simplicity we will consider a cube of size 2U x 2U x 2U. We are not using a unit cube because we would like our vectors for describing the cube orientation to be unit vectors.</p><p>-------------------------------------------------------------------------</p><pre class="codeinput">clearvars
+clc
+clf
+format <span class="string">long</span>
+</pre><img vspace="5" hspace="5" src="ProjectMain_01.png" alt=""> <h2 id="2">Rotation Matrices for Roll, Pitch and Yaw</h2><p>Roll Matrix</p><pre class="codeinput">x_rot = @(theta)([1, 0, 0; <span class="keyword">...</span>
+    0, cosd(theta), -sind(theta); <span class="keyword">...</span>
+    0, sind(theta), cosd(theta)]);
+
+<span class="comment">% Pitch Matrix</span>
+y_rot = @(theta)([cosd(theta), 0, sind(theta); <span class="keyword">...</span>
+    0, 1, 0; <span class="keyword">...</span>
+    -sind(theta), 0, cosd(theta)]);
+
+<span class="comment">% Yaw Matrix</span>
+z_rot = @(theta)([cosd(theta), -sind(theta), 0; <span class="keyword">...</span>
+    sind(theta), cosd(theta), 0; <span class="keyword">...</span>
+   0, 0, 1]);
+
+<span class="comment">% Combined Roll, Pitch, Yaw matrix</span>
+xyz_rot = @(theta_x, theta_y, theta_z)(x_rot(theta_x) * y_rot (theta_y) * <span class="keyword">...</span>
+    z_rot(theta_z));
+</pre><h2 id="3">Calculate Flux Based on Spacecraft Orientation</h2><p>Describe the origin as well as the vectors describing each cubesat face Naming convention will be NorthX, NorthY, NorthZ, SouthX, SouthY, SouthZ</p><pre class="codeinput"><span class="comment">% Define the sun flux vector here</span>
+<span class="comment">% Units are in W/m^2</span>
+
+Sun_Flux = [1; 1; 1];
+
+<span class="comment">% Describe the unit vectors corresponding to spacecraft</span>
+origin = [0; 0; 0];
+north_x = [1; 0; 0];
+north_y = [0; 1; 0];
+north_z = [0; 0; 1];
+south_x = [-1; 0; 0];
+south_y = [0; -1; 0];
+south_z = [0; 0; -1];
+</pre><h2 id="4">Loop to Calculate Light Flux on All Diodes</h2><p>Loop through various roll, pitch and yaw angles and store the values in an array to store the Diode responses to the varying roll pitch and yaw angles</p><pre class="codeinput">angle_start = 0;
+angle_step = 0.1;
+angle_stop = 90;
+angle_array = angle_start:angle_step:angle_stop;
+
+Diode_NorthX = [];
+Diode_NorthY = [];
+Diode_NorthZ = [];
+Diode_SouthX = [];
+Diode_SouthY = [];
+Diode_SouthZ = [];
+
+
+
+<span class="keyword">for</span> i = angle_start:angle_step:angle_stop
+
+<span class="comment">% Rotate these by a specified roll, pitch and yaw</span>
+rot_matrix = xyz_rot(i, 0, 0);
+
+<span class="comment">% Calculate the rotated vectors</span>
+rot_north_x = rot_matrix * north_x;
+rot_north_y = rot_matrix * north_y;
+rot_north_z = rot_matrix * north_z;
+rot_south_x = rot_matrix * south_x;
+rot_south_y = rot_matrix * south_y;
+rot_south_z = rot_matrix * south_z;
+
+CubeArea = 4;
+
+CubeFlux = struct(<span class="string">'NorthX'</span>, -CubeArea * dot(Sun_Flux, rot_north_x), <span class="keyword">...</span>
+    <span class="string">'NorthY'</span>, -CubeArea * dot(Sun_Flux, rot_north_y), <span class="keyword">...</span>
+    <span class="string">'NorthZ'</span>, -CubeArea * dot(Sun_Flux, rot_north_z), <span class="keyword">...</span>
+    <span class="string">'SouthX'</span>, -CubeArea * dot(Sun_Flux, rot_south_x), <span class="keyword">...</span>
+    <span class="string">'SouthY'</span>, -CubeArea * dot(Sun_Flux, rot_south_y), <span class="keyword">...</span>
+    <span class="string">'SouthZ'</span>, -CubeArea * dot(Sun_Flux, rot_south_z));
+
+<span class="comment">% Zero out diode responses that have negative flux</span>
+<span class="comment">% These are calculated by multiplying the response by the boolean</span>
+<span class="comment">% expression for what's true when the response is larger than 0</span>
+
+CubeFlux.NorthX = (CubeFlux.NorthX) * (CubeFlux.NorthX &gt;= 0);
+CubeFlux.NorthY = (CubeFlux.NorthY) * (CubeFlux.NorthY &gt;= 0);
+CubeFlux.NorthZ = (CubeFlux.NorthZ) * (CubeFlux.NorthZ &gt;= 0);
+CubeFlux.SouthX = (CubeFlux.SouthX) * (CubeFlux.SouthX &gt;= 0);
+CubeFlux.SouthY = (CubeFlux.SouthY) * (CubeFlux.SouthY &gt;= 0);
+CubeFlux.SouthZ = (CubeFlux.SouthZ) * (CubeFlux.SouthZ &gt;= 0);
+
+<span class="comment">% Put the diode response curves in an array to be plotted later</span>
+Diode_NorthX = [Diode_NorthX, CubeFlux.NorthX];
+Diode_NorthY = [Diode_NorthY, CubeFlux.NorthY];
+Diode_NorthZ = [Diode_NorthZ, CubeFlux.NorthZ];
+Diode_SouthX = [Diode_SouthX, CubeFlux.SouthX];
+Diode_SouthY = [Diode_SouthY, CubeFlux.SouthY];
+Diode_SouthZ = [Diode_SouthZ, CubeFlux.SouthZ];
+
+fprintf(<span class="string">'Nx: %5.4f Ny: %5.4f Nz: %5.4f Sx: %5.4f Sy: %5.4f Sz: %5.4f\n'</span>, <span class="keyword">...</span>
+    CubeFlux.NorthX, CubeFlux.NorthY, CubeFlux.NorthZ, <span class="keyword">...</span>
+    CubeFlux.SouthX, CubeFlux.SouthY, CubeFlux.SouthZ);
+
+<span class="keyword">end</span>
+</pre><pre class="codeoutput">Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.0000 Sz: 4.0000
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.0070 Sz: 3.9930
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.0139 Sz: 3.9860
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.0209 Sz: 3.9790
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.0278 Sz: 3.9720
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.0348 Sz: 3.9649
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.0417 Sz: 3.9579
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.0486 Sz: 3.9508
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.0555 Sz: 3.9438
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.0623 Sz: 3.9367
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.0692 Sz: 3.9296
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.0761 Sz: 3.9225
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.0829 Sz: 3.9154
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.0897 Sz: 3.9082
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.0965 Sz: 3.9011
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.1033 Sz: 3.8939
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.1101 Sz: 3.8868
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.1169 Sz: 3.8796
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.1237 Sz: 3.8724
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.1304 Sz: 3.8652
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.1372 Sz: 3.8580
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.1439 Sz: 3.8507
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.1506 Sz: 3.8435
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.1573 Sz: 3.8363
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.1640 Sz: 3.8290
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.1707 Sz: 3.8217
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.1773 Sz: 3.8144
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.1840 Sz: 3.8071
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.1906 Sz: 3.7998
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.1972 Sz: 3.7925
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.2039 Sz: 3.7852
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.2105 Sz: 3.7778
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.2170 Sz: 3.7705
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.2236 Sz: 3.7631
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.2302 Sz: 3.7557
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.2367 Sz: 3.7483
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.2433 Sz: 3.7409
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.2498 Sz: 3.7335
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.2563 Sz: 3.7261
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.2628 Sz: 3.7187
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.2693 Sz: 3.7112
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.2758 Sz: 3.7038
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.2822 Sz: 3.6963
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.2887 Sz: 3.6888
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.2951 Sz: 3.6813
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.3015 Sz: 3.6738
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.3079 Sz: 3.6663
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.3143 Sz: 3.6588
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.3207 Sz: 3.6513
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.3270 Sz: 3.6437
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.3334 Sz: 3.6362
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.3397 Sz: 3.6286
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.3461 Sz: 3.6210
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.3524 Sz: 3.6134
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.3587 Sz: 3.6058
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.3650 Sz: 3.5982
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.3712 Sz: 3.5906
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.3775 Sz: 3.5829
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.3837 Sz: 3.5753
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.3900 Sz: 3.5676
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.3962 Sz: 3.5600
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.4024 Sz: 3.5523
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.4086 Sz: 3.5446
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.4148 Sz: 3.5369
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.4209 Sz: 3.5292
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.4271 Sz: 3.5215
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.4332 Sz: 3.5137
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.4394 Sz: 3.5060
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.4455 Sz: 3.4982
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.4516 Sz: 3.4905
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.4577 Sz: 3.4827
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.4637 Sz: 3.4749
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.4698 Sz: 3.4671
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.4758 Sz: 3.4593
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.4819 Sz: 3.4515
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.4879 Sz: 3.4437
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.4939 Sz: 3.4358
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.4999 Sz: 3.4280
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.5059 Sz: 3.4201
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.5118 Sz: 3.4123
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.5178 Sz: 3.4044
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.5237 Sz: 3.3965
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.5296 Sz: 3.3886
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.5355 Sz: 3.3807
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.5414 Sz: 3.3728
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.5473 Sz: 3.3648
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.5532 Sz: 3.3569
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.5590 Sz: 3.3489
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.5649 Sz: 3.3410
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.5707 Sz: 3.3330
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.5765 Sz: 3.3250
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.5823 Sz: 3.3170
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.5881 Sz: 3.3090
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.5938 Sz: 3.3010
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.5996 Sz: 3.2930
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.6053 Sz: 3.2850
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.6111 Sz: 3.2769
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.6168 Sz: 3.2689
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.6225 Sz: 3.2608
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.6282 Sz: 3.2527
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.6338 Sz: 3.2446
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.6395 Sz: 3.2365
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.6451 Sz: 3.2284
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.6507 Sz: 3.2203
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.6564 Sz: 3.2122
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.6620 Sz: 3.2041
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.6675 Sz: 3.1959
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.6731 Sz: 3.1878
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.6787 Sz: 3.1796
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.6842 Sz: 3.1715
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.6897 Sz: 3.1633
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.6953 Sz: 3.1551
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.7008 Sz: 3.1469
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.7062 Sz: 3.1387
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.7117 Sz: 3.1305
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.7172 Sz: 3.1222
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.7226 Sz: 3.1140
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.7280 Sz: 3.1057
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.7335 Sz: 3.0975
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.7389 Sz: 3.0892
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.7442 Sz: 3.0809
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.7496 Sz: 3.0727
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.7550 Sz: 3.0644
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.7603 Sz: 3.0561
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.7656 Sz: 3.0477
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.7709 Sz: 3.0394
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.7762 Sz: 3.0311
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.7815 Sz: 3.0228
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.7868 Sz: 3.0144
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.7920 Sz: 3.0060
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.7973 Sz: 2.9977
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.8025 Sz: 2.9893
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.8077 Sz: 2.9809
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.8129 Sz: 2.9725
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.8181 Sz: 2.9641
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.8233 Sz: 2.9557
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.8284 Sz: 2.9473
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.8335 Sz: 2.9388
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.8387 Sz: 2.9304
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.8438 Sz: 2.9220
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.8489 Sz: 2.9135
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.8539 Sz: 2.9050
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.8590 Sz: 2.8966
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.8641 Sz: 2.8881
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.8691 Sz: 2.8796
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.8741 Sz: 2.8711
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.8791 Sz: 2.8626
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.8841 Sz: 2.8540
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.8891 Sz: 2.8455
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.8940 Sz: 2.8370
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.8990 Sz: 2.8284
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.9039 Sz: 2.8199
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.9088 Sz: 2.8113
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.9137 Sz: 2.8027
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.9186 Sz: 2.7942
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.9235 Sz: 2.7856
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.9283 Sz: 2.7770
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.9332 Sz: 2.7684
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.9380 Sz: 2.7598
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.9428 Sz: 2.7511
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.9476 Sz: 2.7425
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.9524 Sz: 2.7339
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.9571 Sz: 2.7252
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.9619 Sz: 2.7166
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.9666 Sz: 2.7079
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.9713 Sz: 2.6992
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.9760 Sz: 2.6905
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.9807 Sz: 2.6818
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.9854 Sz: 2.6732
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.9901 Sz: 2.6644
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.9947 Sz: 2.6557
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 4.9993 Sz: 2.6470
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.0039 Sz: 2.6383
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.0085 Sz: 2.6295
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.0131 Sz: 2.6208
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.0177 Sz: 2.6120
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.0222 Sz: 2.6033
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.0268 Sz: 2.5945
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.0313 Sz: 2.5857
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.0358 Sz: 2.5770
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.0403 Sz: 2.5682
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.0448 Sz: 2.5594
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.0492 Sz: 2.5505
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.0537 Sz: 2.5417
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.0581 Sz: 2.5329
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.0625 Sz: 2.5241
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.0669 Sz: 2.5152
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.0713 Sz: 2.5064
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.0757 Sz: 2.4975
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.0800 Sz: 2.4887
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.0843 Sz: 2.4798
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.0887 Sz: 2.4709
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.0930 Sz: 2.4620
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.0973 Sz: 2.4531
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.1015 Sz: 2.4442
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.1058 Sz: 2.4353
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.1100 Sz: 2.4264
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.1143 Sz: 2.4175
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.1185 Sz: 2.4086
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.1227 Sz: 2.3996
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.1269 Sz: 2.3907
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.1310 Sz: 2.3817
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.1352 Sz: 2.3728
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.1393 Sz: 2.3638
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.1434 Sz: 2.3548
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.1475 Sz: 2.3459
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.1516 Sz: 2.3369
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.1557 Sz: 2.3279
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.1597 Sz: 2.3189
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.1638 Sz: 2.3099
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.1678 Sz: 2.3008
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.1718 Sz: 2.2918
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.1758 Sz: 2.2828
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.1798 Sz: 2.2738
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.1837 Sz: 2.2647
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.1877 Sz: 2.2557
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.1916 Sz: 2.2466
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.1955 Sz: 2.2375
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.1994 Sz: 2.2285
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.2033 Sz: 2.2194
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.2072 Sz: 2.2103
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.2110 Sz: 2.2012
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.2148 Sz: 2.1921
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.2187 Sz: 2.1830
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.2225 Sz: 2.1739
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.2263 Sz: 2.1648
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.2300 Sz: 2.1557
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.2338 Sz: 2.1465
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.2375 Sz: 2.1374
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.2412 Sz: 2.1282
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.2449 Sz: 2.1191
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.2486 Sz: 2.1099
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.2523 Sz: 2.1008
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.2560 Sz: 2.0916
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.2596 Sz: 2.0824
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.2632 Sz: 2.0732
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.2668 Sz: 2.0641
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.2704 Sz: 2.0549
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.2740 Sz: 2.0457
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.2776 Sz: 2.0364
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.2811 Sz: 2.0272
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.2847 Sz: 2.0180
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.2882 Sz: 2.0088
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.2917 Sz: 1.9996
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.2952 Sz: 1.9903
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.2986 Sz: 1.9811
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.3021 Sz: 1.9718
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.3055 Sz: 1.9626
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.3089 Sz: 1.9533
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.3123 Sz: 1.9440
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.3157 Sz: 1.9348
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.3191 Sz: 1.9255
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.3224 Sz: 1.9162
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.3258 Sz: 1.9069
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.3291 Sz: 1.8976
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.3324 Sz: 1.8883
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.3357 Sz: 1.8790
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.3389 Sz: 1.8697
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.3422 Sz: 1.8604
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.3454 Sz: 1.8510
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.3487 Sz: 1.8417
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.3519 Sz: 1.8324
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.3551 Sz: 1.8230
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.3582 Sz: 1.8137
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.3614 Sz: 1.8043
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.3645 Sz: 1.7949
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.3677 Sz: 1.7856
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.3708 Sz: 1.7762
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.3739 Sz: 1.7668
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.3769 Sz: 1.7575
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.3800 Sz: 1.7481
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.3830 Sz: 1.7387
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.3861 Sz: 1.7293
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.3891 Sz: 1.7199
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.3921 Sz: 1.7105
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.3950 Sz: 1.7010
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.3980 Sz: 1.6916
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.4009 Sz: 1.6822
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.4039 Sz: 1.6728
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.4068 Sz: 1.6633
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.4097 Sz: 1.6539
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.4126 Sz: 1.6445
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.4154 Sz: 1.6350
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.4183 Sz: 1.6256
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.4211 Sz: 1.6161
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.4239 Sz: 1.6066
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.4267 Sz: 1.5972
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.4295 Sz: 1.5877
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.4322 Sz: 1.5782
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.4350 Sz: 1.5687
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.4377 Sz: 1.5592
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.4404 Sz: 1.5497
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.4431 Sz: 1.5402
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.4458 Sz: 1.5307
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.4485 Sz: 1.5212
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.4511 Sz: 1.5117
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.4537 Sz: 1.5022
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.4564 Sz: 1.4927
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.4590 Sz: 1.4832
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.4615 Sz: 1.4736
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.4641 Sz: 1.4641
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.4666 Sz: 1.4546
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.4692 Sz: 1.4450
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.4717 Sz: 1.4355
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.4742 Sz: 1.4259
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.4767 Sz: 1.4164
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.4791 Sz: 1.4068
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.4816 Sz: 1.3972
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.4840 Sz: 1.3877
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.4864 Sz: 1.3781
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.4888 Sz: 1.3685
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.4912 Sz: 1.3589
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.4936 Sz: 1.3493
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.4959 Sz: 1.3398
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.4982 Sz: 1.3302
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.5006 Sz: 1.3206
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.5029 Sz: 1.3110
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.5051 Sz: 1.3014
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.5074 Sz: 1.2917
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.5096 Sz: 1.2821
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.5119 Sz: 1.2725
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.5141 Sz: 1.2629
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.5163 Sz: 1.2533
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.5185 Sz: 1.2436
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.5206 Sz: 1.2340
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.5228 Sz: 1.2244
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.5249 Sz: 1.2147
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.5270 Sz: 1.2051
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.5291 Sz: 1.1954
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.5312 Sz: 1.1858
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.5332 Sz: 1.1761
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.5353 Sz: 1.1665
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.5373 Sz: 1.1568
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.5393 Sz: 1.1471
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.5413 Sz: 1.1375
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.5433 Sz: 1.1278
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.5453 Sz: 1.1181
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.5472 Sz: 1.1084
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.5491 Sz: 1.0988
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.5510 Sz: 1.0891
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.5529 Sz: 1.0794
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.5548 Sz: 1.0697
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.5567 Sz: 1.0600
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.5585 Sz: 1.0503
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.5603 Sz: 1.0406
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.5621 Sz: 1.0309
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.5639 Sz: 1.0212
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.5657 Sz: 1.0115
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.5675 Sz: 1.0017
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.5692 Sz: 0.9920
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.5709 Sz: 0.9823
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.5726 Sz: 0.9726
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.5743 Sz: 0.9629
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.5760 Sz: 0.9531
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.5776 Sz: 0.9434
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.5793 Sz: 0.9337
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.5809 Sz: 0.9239
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.5825 Sz: 0.9142
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.5841 Sz: 0.9044
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.5857 Sz: 0.8947
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.5872 Sz: 0.8849
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.5887 Sz: 0.8752
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.5903 Sz: 0.8654
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.5918 Sz: 0.8557
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.5933 Sz: 0.8459
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.5947 Sz: 0.8361
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.5962 Sz: 0.8264
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.5976 Sz: 0.8166
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.5990 Sz: 0.8068
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.6004 Sz: 0.7971
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.6018 Sz: 0.7873
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.6032 Sz: 0.7775
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.6045 Sz: 0.7677
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.6058 Sz: 0.7579
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.6072 Sz: 0.7482
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.6085 Sz: 0.7384
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.6097 Sz: 0.7286
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.6110 Sz: 0.7188
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.6122 Sz: 0.7090
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.6135 Sz: 0.6992
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.6147 Sz: 0.6894
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.6159 Sz: 0.6796
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.6171 Sz: 0.6698
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.6182 Sz: 0.6600
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.6194 Sz: 0.6502
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.6205 Sz: 0.6404
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.6216 Sz: 0.6306
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.6227 Sz: 0.6208
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.6238 Sz: 0.6109
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.6248 Sz: 0.6011
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.6259 Sz: 0.5913
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.6269 Sz: 0.5815
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.6279 Sz: 0.5717
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.6289 Sz: 0.5618
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.6299 Sz: 0.5520
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.6308 Sz: 0.5422
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.6317 Sz: 0.5324
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.6327 Sz: 0.5225
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.6336 Sz: 0.5127
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.6345 Sz: 0.5029
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.6353 Sz: 0.4930
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.6362 Sz: 0.4832
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.6370 Sz: 0.4734
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.6378 Sz: 0.4635
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.6386 Sz: 0.4537
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.6394 Sz: 0.4438
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.6402 Sz: 0.4340
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.6409 Sz: 0.4241
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.6417 Sz: 0.4143
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.6424 Sz: 0.4045
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.6431 Sz: 0.3946
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.6438 Sz: 0.3848
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.6444 Sz: 0.3749
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.6451 Sz: 0.3650
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.6457 Sz: 0.3552
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.6463 Sz: 0.3453
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.6469 Sz: 0.3355
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.6475 Sz: 0.3256
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.6480 Sz: 0.3158
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.6486 Sz: 0.3059
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.6491 Sz: 0.2961
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.6496 Sz: 0.2862
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.6501 Sz: 0.2763
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.6506 Sz: 0.2665
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.6510 Sz: 0.2566
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.6515 Sz: 0.2467
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.6519 Sz: 0.2369
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.6523 Sz: 0.2270
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.6527 Sz: 0.2172
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.6531 Sz: 0.2073
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.6534 Sz: 0.1974
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.6537 Sz: 0.1876
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.6541 Sz: 0.1777
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.6544 Sz: 0.1678
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.6546 Sz: 0.1579
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.6549 Sz: 0.1481
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.6552 Sz: 0.1382
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.6554 Sz: 0.1283
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.6556 Sz: 0.1185
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.6558 Sz: 0.1086
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.6560 Sz: 0.0987
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.6562 Sz: 0.0889
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.6563 Sz: 0.0790
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.6564 Sz: 0.0691
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.6565 Sz: 0.0592
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.6566 Sz: 0.0494
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.6567 Sz: 0.0395
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.6568 Sz: 0.0296
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.6568 Sz: 0.0197
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.6568 Sz: 0.0099
+Nx: -0.0000 Ny: -0.0000 Nz: -0.0000 Sx: 4.0000 Sy: 5.6569 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.0099 Sx: 4.0000 Sy: 5.6568 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.0197 Sx: 4.0000 Sy: 5.6568 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.0296 Sx: 4.0000 Sy: 5.6568 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.0395 Sx: 4.0000 Sy: 5.6567 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.0494 Sx: 4.0000 Sy: 5.6566 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.0592 Sx: 4.0000 Sy: 5.6565 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.0691 Sx: 4.0000 Sy: 5.6564 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.0790 Sx: 4.0000 Sy: 5.6563 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.0889 Sx: 4.0000 Sy: 5.6562 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.0987 Sx: 4.0000 Sy: 5.6560 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.1086 Sx: 4.0000 Sy: 5.6558 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.1185 Sx: 4.0000 Sy: 5.6556 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.1283 Sx: 4.0000 Sy: 5.6554 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.1382 Sx: 4.0000 Sy: 5.6552 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.1481 Sx: 4.0000 Sy: 5.6549 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.1579 Sx: 4.0000 Sy: 5.6546 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.1678 Sx: 4.0000 Sy: 5.6544 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.1777 Sx: 4.0000 Sy: 5.6541 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.1876 Sx: 4.0000 Sy: 5.6537 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.1974 Sx: 4.0000 Sy: 5.6534 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.2073 Sx: 4.0000 Sy: 5.6531 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.2172 Sx: 4.0000 Sy: 5.6527 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.2270 Sx: 4.0000 Sy: 5.6523 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.2369 Sx: 4.0000 Sy: 5.6519 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.2467 Sx: 4.0000 Sy: 5.6515 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.2566 Sx: 4.0000 Sy: 5.6510 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.2665 Sx: 4.0000 Sy: 5.6506 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.2763 Sx: 4.0000 Sy: 5.6501 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.2862 Sx: 4.0000 Sy: 5.6496 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.2961 Sx: 4.0000 Sy: 5.6491 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.3059 Sx: 4.0000 Sy: 5.6486 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.3158 Sx: 4.0000 Sy: 5.6480 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.3256 Sx: 4.0000 Sy: 5.6475 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.3355 Sx: 4.0000 Sy: 5.6469 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.3453 Sx: 4.0000 Sy: 5.6463 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.3552 Sx: 4.0000 Sy: 5.6457 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.3650 Sx: 4.0000 Sy: 5.6451 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.3749 Sx: 4.0000 Sy: 5.6444 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.3848 Sx: 4.0000 Sy: 5.6438 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.3946 Sx: 4.0000 Sy: 5.6431 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.4045 Sx: 4.0000 Sy: 5.6424 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.4143 Sx: 4.0000 Sy: 5.6417 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.4241 Sx: 4.0000 Sy: 5.6409 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.4340 Sx: 4.0000 Sy: 5.6402 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.4438 Sx: 4.0000 Sy: 5.6394 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.4537 Sx: 4.0000 Sy: 5.6386 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.4635 Sx: 4.0000 Sy: 5.6378 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.4734 Sx: 4.0000 Sy: 5.6370 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.4832 Sx: 4.0000 Sy: 5.6362 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.4930 Sx: 4.0000 Sy: 5.6353 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.5029 Sx: 4.0000 Sy: 5.6345 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.5127 Sx: 4.0000 Sy: 5.6336 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.5225 Sx: 4.0000 Sy: 5.6327 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.5324 Sx: 4.0000 Sy: 5.6317 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.5422 Sx: 4.0000 Sy: 5.6308 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.5520 Sx: 4.0000 Sy: 5.6299 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.5618 Sx: 4.0000 Sy: 5.6289 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.5717 Sx: 4.0000 Sy: 5.6279 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.5815 Sx: 4.0000 Sy: 5.6269 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.5913 Sx: 4.0000 Sy: 5.6259 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.6011 Sx: 4.0000 Sy: 5.6248 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.6109 Sx: 4.0000 Sy: 5.6238 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.6208 Sx: 4.0000 Sy: 5.6227 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.6306 Sx: 4.0000 Sy: 5.6216 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.6404 Sx: 4.0000 Sy: 5.6205 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.6502 Sx: 4.0000 Sy: 5.6194 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.6600 Sx: 4.0000 Sy: 5.6182 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.6698 Sx: 4.0000 Sy: 5.6171 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.6796 Sx: 4.0000 Sy: 5.6159 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.6894 Sx: 4.0000 Sy: 5.6147 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.6992 Sx: 4.0000 Sy: 5.6135 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.7090 Sx: 4.0000 Sy: 5.6122 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.7188 Sx: 4.0000 Sy: 5.6110 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.7286 Sx: 4.0000 Sy: 5.6097 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.7384 Sx: 4.0000 Sy: 5.6085 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.7482 Sx: 4.0000 Sy: 5.6072 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.7579 Sx: 4.0000 Sy: 5.6058 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.7677 Sx: 4.0000 Sy: 5.6045 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.7775 Sx: 4.0000 Sy: 5.6032 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.7873 Sx: 4.0000 Sy: 5.6018 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.7971 Sx: 4.0000 Sy: 5.6004 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.8068 Sx: 4.0000 Sy: 5.5990 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.8166 Sx: 4.0000 Sy: 5.5976 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.8264 Sx: 4.0000 Sy: 5.5962 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.8361 Sx: 4.0000 Sy: 5.5947 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.8459 Sx: 4.0000 Sy: 5.5933 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.8557 Sx: 4.0000 Sy: 5.5918 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.8654 Sx: 4.0000 Sy: 5.5903 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.8752 Sx: 4.0000 Sy: 5.5887 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.8849 Sx: 4.0000 Sy: 5.5872 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.8947 Sx: 4.0000 Sy: 5.5857 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.9044 Sx: 4.0000 Sy: 5.5841 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.9142 Sx: 4.0000 Sy: 5.5825 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.9239 Sx: 4.0000 Sy: 5.5809 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.9337 Sx: 4.0000 Sy: 5.5793 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.9434 Sx: 4.0000 Sy: 5.5776 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.9531 Sx: 4.0000 Sy: 5.5760 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.9629 Sx: 4.0000 Sy: 5.5743 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.9726 Sx: 4.0000 Sy: 5.5726 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.9823 Sx: 4.0000 Sy: 5.5709 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 0.9920 Sx: 4.0000 Sy: 5.5692 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.0017 Sx: 4.0000 Sy: 5.5675 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.0115 Sx: 4.0000 Sy: 5.5657 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.0212 Sx: 4.0000 Sy: 5.5639 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.0309 Sx: 4.0000 Sy: 5.5621 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.0406 Sx: 4.0000 Sy: 5.5603 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.0503 Sx: 4.0000 Sy: 5.5585 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.0600 Sx: 4.0000 Sy: 5.5567 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.0697 Sx: 4.0000 Sy: 5.5548 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.0794 Sx: 4.0000 Sy: 5.5529 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.0891 Sx: 4.0000 Sy: 5.5510 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.0988 Sx: 4.0000 Sy: 5.5491 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.1084 Sx: 4.0000 Sy: 5.5472 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.1181 Sx: 4.0000 Sy: 5.5453 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.1278 Sx: 4.0000 Sy: 5.5433 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.1375 Sx: 4.0000 Sy: 5.5413 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.1471 Sx: 4.0000 Sy: 5.5393 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.1568 Sx: 4.0000 Sy: 5.5373 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.1665 Sx: 4.0000 Sy: 5.5353 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.1761 Sx: 4.0000 Sy: 5.5332 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.1858 Sx: 4.0000 Sy: 5.5312 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.1954 Sx: 4.0000 Sy: 5.5291 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.2051 Sx: 4.0000 Sy: 5.5270 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.2147 Sx: 4.0000 Sy: 5.5249 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.2244 Sx: 4.0000 Sy: 5.5228 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.2340 Sx: 4.0000 Sy: 5.5206 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.2436 Sx: 4.0000 Sy: 5.5185 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.2533 Sx: 4.0000 Sy: 5.5163 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.2629 Sx: 4.0000 Sy: 5.5141 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.2725 Sx: 4.0000 Sy: 5.5119 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.2821 Sx: 4.0000 Sy: 5.5096 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.2917 Sx: 4.0000 Sy: 5.5074 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.3014 Sx: 4.0000 Sy: 5.5051 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.3110 Sx: 4.0000 Sy: 5.5029 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.3206 Sx: 4.0000 Sy: 5.5006 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.3302 Sx: 4.0000 Sy: 5.4982 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.3398 Sx: 4.0000 Sy: 5.4959 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.3493 Sx: 4.0000 Sy: 5.4936 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.3589 Sx: 4.0000 Sy: 5.4912 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.3685 Sx: 4.0000 Sy: 5.4888 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.3781 Sx: 4.0000 Sy: 5.4864 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.3877 Sx: 4.0000 Sy: 5.4840 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.3972 Sx: 4.0000 Sy: 5.4816 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.4068 Sx: 4.0000 Sy: 5.4791 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.4164 Sx: 4.0000 Sy: 5.4767 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.4259 Sx: 4.0000 Sy: 5.4742 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.4355 Sx: 4.0000 Sy: 5.4717 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.4450 Sx: 4.0000 Sy: 5.4692 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.4546 Sx: 4.0000 Sy: 5.4666 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.4641 Sx: 4.0000 Sy: 5.4641 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.4736 Sx: 4.0000 Sy: 5.4615 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.4832 Sx: 4.0000 Sy: 5.4590 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.4927 Sx: 4.0000 Sy: 5.4564 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.5022 Sx: 4.0000 Sy: 5.4537 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.5117 Sx: 4.0000 Sy: 5.4511 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.5212 Sx: 4.0000 Sy: 5.4485 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.5307 Sx: 4.0000 Sy: 5.4458 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.5402 Sx: 4.0000 Sy: 5.4431 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.5497 Sx: 4.0000 Sy: 5.4404 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.5592 Sx: 4.0000 Sy: 5.4377 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.5687 Sx: 4.0000 Sy: 5.4350 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.5782 Sx: 4.0000 Sy: 5.4322 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.5877 Sx: 4.0000 Sy: 5.4295 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.5972 Sx: 4.0000 Sy: 5.4267 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.6066 Sx: 4.0000 Sy: 5.4239 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.6161 Sx: 4.0000 Sy: 5.4211 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.6256 Sx: 4.0000 Sy: 5.4183 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.6350 Sx: 4.0000 Sy: 5.4154 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.6445 Sx: 4.0000 Sy: 5.4126 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.6539 Sx: 4.0000 Sy: 5.4097 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.6633 Sx: 4.0000 Sy: 5.4068 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.6728 Sx: 4.0000 Sy: 5.4039 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.6822 Sx: 4.0000 Sy: 5.4009 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.6916 Sx: 4.0000 Sy: 5.3980 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.7010 Sx: 4.0000 Sy: 5.3950 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.7105 Sx: 4.0000 Sy: 5.3921 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.7199 Sx: 4.0000 Sy: 5.3891 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.7293 Sx: 4.0000 Sy: 5.3861 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.7387 Sx: 4.0000 Sy: 5.3830 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.7481 Sx: 4.0000 Sy: 5.3800 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.7575 Sx: 4.0000 Sy: 5.3769 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.7668 Sx: 4.0000 Sy: 5.3739 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.7762 Sx: 4.0000 Sy: 5.3708 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.7856 Sx: 4.0000 Sy: 5.3677 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.7949 Sx: 4.0000 Sy: 5.3645 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.8043 Sx: 4.0000 Sy: 5.3614 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.8137 Sx: 4.0000 Sy: 5.3582 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.8230 Sx: 4.0000 Sy: 5.3551 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.8324 Sx: 4.0000 Sy: 5.3519 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.8417 Sx: 4.0000 Sy: 5.3487 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.8510 Sx: 4.0000 Sy: 5.3454 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.8604 Sx: 4.0000 Sy: 5.3422 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.8697 Sx: 4.0000 Sy: 5.3389 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.8790 Sx: 4.0000 Sy: 5.3357 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.8883 Sx: 4.0000 Sy: 5.3324 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.8976 Sx: 4.0000 Sy: 5.3291 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.9069 Sx: 4.0000 Sy: 5.3258 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.9162 Sx: 4.0000 Sy: 5.3224 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.9255 Sx: 4.0000 Sy: 5.3191 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.9348 Sx: 4.0000 Sy: 5.3157 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.9440 Sx: 4.0000 Sy: 5.3123 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.9533 Sx: 4.0000 Sy: 5.3089 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.9626 Sx: 4.0000 Sy: 5.3055 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.9718 Sx: 4.0000 Sy: 5.3021 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.9811 Sx: 4.0000 Sy: 5.2986 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.9903 Sx: 4.0000 Sy: 5.2952 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 1.9996 Sx: 4.0000 Sy: 5.2917 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.0088 Sx: 4.0000 Sy: 5.2882 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.0180 Sx: 4.0000 Sy: 5.2847 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.0272 Sx: 4.0000 Sy: 5.2811 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.0364 Sx: 4.0000 Sy: 5.2776 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.0457 Sx: 4.0000 Sy: 5.2740 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.0549 Sx: 4.0000 Sy: 5.2704 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.0641 Sx: 4.0000 Sy: 5.2668 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.0732 Sx: 4.0000 Sy: 5.2632 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.0824 Sx: 4.0000 Sy: 5.2596 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.0916 Sx: 4.0000 Sy: 5.2560 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.1008 Sx: 4.0000 Sy: 5.2523 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.1099 Sx: 4.0000 Sy: 5.2486 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.1191 Sx: 4.0000 Sy: 5.2449 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.1282 Sx: 4.0000 Sy: 5.2412 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.1374 Sx: 4.0000 Sy: 5.2375 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.1465 Sx: 4.0000 Sy: 5.2338 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.1557 Sx: 4.0000 Sy: 5.2300 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.1648 Sx: 4.0000 Sy: 5.2263 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.1739 Sx: 4.0000 Sy: 5.2225 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.1830 Sx: 4.0000 Sy: 5.2187 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.1921 Sx: 4.0000 Sy: 5.2148 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.2012 Sx: 4.0000 Sy: 5.2110 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.2103 Sx: 4.0000 Sy: 5.2072 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.2194 Sx: 4.0000 Sy: 5.2033 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.2285 Sx: 4.0000 Sy: 5.1994 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.2375 Sx: 4.0000 Sy: 5.1955 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.2466 Sx: 4.0000 Sy: 5.1916 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.2557 Sx: 4.0000 Sy: 5.1877 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.2647 Sx: 4.0000 Sy: 5.1837 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.2738 Sx: 4.0000 Sy: 5.1798 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.2828 Sx: 4.0000 Sy: 5.1758 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.2918 Sx: 4.0000 Sy: 5.1718 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.3008 Sx: 4.0000 Sy: 5.1678 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.3099 Sx: 4.0000 Sy: 5.1638 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.3189 Sx: 4.0000 Sy: 5.1597 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.3279 Sx: 4.0000 Sy: 5.1557 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.3369 Sx: 4.0000 Sy: 5.1516 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.3459 Sx: 4.0000 Sy: 5.1475 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.3548 Sx: 4.0000 Sy: 5.1434 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.3638 Sx: 4.0000 Sy: 5.1393 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.3728 Sx: 4.0000 Sy: 5.1352 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.3817 Sx: 4.0000 Sy: 5.1310 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.3907 Sx: 4.0000 Sy: 5.1269 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.3996 Sx: 4.0000 Sy: 5.1227 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.4086 Sx: 4.0000 Sy: 5.1185 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.4175 Sx: 4.0000 Sy: 5.1143 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.4264 Sx: 4.0000 Sy: 5.1100 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.4353 Sx: 4.0000 Sy: 5.1058 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.4442 Sx: 4.0000 Sy: 5.1015 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.4531 Sx: 4.0000 Sy: 5.0973 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.4620 Sx: 4.0000 Sy: 5.0930 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.4709 Sx: 4.0000 Sy: 5.0887 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.4798 Sx: 4.0000 Sy: 5.0843 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.4887 Sx: 4.0000 Sy: 5.0800 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.4975 Sx: 4.0000 Sy: 5.0757 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.5064 Sx: 4.0000 Sy: 5.0713 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.5152 Sx: 4.0000 Sy: 5.0669 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.5241 Sx: 4.0000 Sy: 5.0625 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.5329 Sx: 4.0000 Sy: 5.0581 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.5417 Sx: 4.0000 Sy: 5.0537 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.5505 Sx: 4.0000 Sy: 5.0492 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.5594 Sx: 4.0000 Sy: 5.0448 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.5682 Sx: 4.0000 Sy: 5.0403 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.5770 Sx: 4.0000 Sy: 5.0358 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.5857 Sx: 4.0000 Sy: 5.0313 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.5945 Sx: 4.0000 Sy: 5.0268 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.6033 Sx: 4.0000 Sy: 5.0222 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.6120 Sx: 4.0000 Sy: 5.0177 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.6208 Sx: 4.0000 Sy: 5.0131 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.6295 Sx: 4.0000 Sy: 5.0085 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.6383 Sx: 4.0000 Sy: 5.0039 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.6470 Sx: 4.0000 Sy: 4.9993 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.6557 Sx: 4.0000 Sy: 4.9947 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.6644 Sx: 4.0000 Sy: 4.9901 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.6732 Sx: 4.0000 Sy: 4.9854 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.6818 Sx: 4.0000 Sy: 4.9807 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.6905 Sx: 4.0000 Sy: 4.9760 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.6992 Sx: 4.0000 Sy: 4.9713 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.7079 Sx: 4.0000 Sy: 4.9666 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.7166 Sx: 4.0000 Sy: 4.9619 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.7252 Sx: 4.0000 Sy: 4.9571 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.7339 Sx: 4.0000 Sy: 4.9524 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.7425 Sx: 4.0000 Sy: 4.9476 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.7511 Sx: 4.0000 Sy: 4.9428 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.7598 Sx: 4.0000 Sy: 4.9380 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.7684 Sx: 4.0000 Sy: 4.9332 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.7770 Sx: 4.0000 Sy: 4.9283 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.7856 Sx: 4.0000 Sy: 4.9235 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.7942 Sx: 4.0000 Sy: 4.9186 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.8027 Sx: 4.0000 Sy: 4.9137 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.8113 Sx: 4.0000 Sy: 4.9088 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.8199 Sx: 4.0000 Sy: 4.9039 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.8284 Sx: 4.0000 Sy: 4.8990 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.8370 Sx: 4.0000 Sy: 4.8940 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.8455 Sx: 4.0000 Sy: 4.8891 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.8540 Sx: 4.0000 Sy: 4.8841 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.8626 Sx: 4.0000 Sy: 4.8791 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.8711 Sx: 4.0000 Sy: 4.8741 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.8796 Sx: 4.0000 Sy: 4.8691 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.8881 Sx: 4.0000 Sy: 4.8641 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.8966 Sx: 4.0000 Sy: 4.8590 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.9050 Sx: 4.0000 Sy: 4.8539 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.9135 Sx: 4.0000 Sy: 4.8489 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.9220 Sx: 4.0000 Sy: 4.8438 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.9304 Sx: 4.0000 Sy: 4.8387 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.9388 Sx: 4.0000 Sy: 4.8335 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.9473 Sx: 4.0000 Sy: 4.8284 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.9557 Sx: 4.0000 Sy: 4.8233 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.9641 Sx: 4.0000 Sy: 4.8181 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.9725 Sx: 4.0000 Sy: 4.8129 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.9809 Sx: 4.0000 Sy: 4.8077 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.9893 Sx: 4.0000 Sy: 4.8025 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 2.9977 Sx: 4.0000 Sy: 4.7973 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.0060 Sx: 4.0000 Sy: 4.7920 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.0144 Sx: 4.0000 Sy: 4.7868 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.0228 Sx: 4.0000 Sy: 4.7815 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.0311 Sx: 4.0000 Sy: 4.7762 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.0394 Sx: 4.0000 Sy: 4.7709 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.0477 Sx: 4.0000 Sy: 4.7656 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.0561 Sx: 4.0000 Sy: 4.7603 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.0644 Sx: 4.0000 Sy: 4.7550 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.0727 Sx: 4.0000 Sy: 4.7496 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.0809 Sx: 4.0000 Sy: 4.7442 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.0892 Sx: 4.0000 Sy: 4.7389 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.0975 Sx: 4.0000 Sy: 4.7335 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.1057 Sx: 4.0000 Sy: 4.7280 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.1140 Sx: 4.0000 Sy: 4.7226 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.1222 Sx: 4.0000 Sy: 4.7172 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.1305 Sx: 4.0000 Sy: 4.7117 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.1387 Sx: 4.0000 Sy: 4.7062 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.1469 Sx: 4.0000 Sy: 4.7008 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.1551 Sx: 4.0000 Sy: 4.6953 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.1633 Sx: 4.0000 Sy: 4.6897 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.1715 Sx: 4.0000 Sy: 4.6842 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.1796 Sx: 4.0000 Sy: 4.6787 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.1878 Sx: 4.0000 Sy: 4.6731 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.1959 Sx: 4.0000 Sy: 4.6675 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.2041 Sx: 4.0000 Sy: 4.6620 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.2122 Sx: 4.0000 Sy: 4.6564 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.2203 Sx: 4.0000 Sy: 4.6507 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.2284 Sx: 4.0000 Sy: 4.6451 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.2365 Sx: 4.0000 Sy: 4.6395 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.2446 Sx: 4.0000 Sy: 4.6338 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.2527 Sx: 4.0000 Sy: 4.6282 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.2608 Sx: 4.0000 Sy: 4.6225 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.2689 Sx: 4.0000 Sy: 4.6168 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.2769 Sx: 4.0000 Sy: 4.6111 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.2850 Sx: 4.0000 Sy: 4.6053 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.2930 Sx: 4.0000 Sy: 4.5996 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.3010 Sx: 4.0000 Sy: 4.5938 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.3090 Sx: 4.0000 Sy: 4.5881 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.3170 Sx: 4.0000 Sy: 4.5823 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.3250 Sx: 4.0000 Sy: 4.5765 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.3330 Sx: 4.0000 Sy: 4.5707 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.3410 Sx: 4.0000 Sy: 4.5649 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.3489 Sx: 4.0000 Sy: 4.5590 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.3569 Sx: 4.0000 Sy: 4.5532 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.3648 Sx: 4.0000 Sy: 4.5473 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.3728 Sx: 4.0000 Sy: 4.5414 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.3807 Sx: 4.0000 Sy: 4.5355 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.3886 Sx: 4.0000 Sy: 4.5296 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.3965 Sx: 4.0000 Sy: 4.5237 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.4044 Sx: 4.0000 Sy: 4.5178 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.4123 Sx: 4.0000 Sy: 4.5118 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.4201 Sx: 4.0000 Sy: 4.5059 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.4280 Sx: 4.0000 Sy: 4.4999 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.4358 Sx: 4.0000 Sy: 4.4939 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.4437 Sx: 4.0000 Sy: 4.4879 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.4515 Sx: 4.0000 Sy: 4.4819 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.4593 Sx: 4.0000 Sy: 4.4758 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.4671 Sx: 4.0000 Sy: 4.4698 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.4749 Sx: 4.0000 Sy: 4.4637 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.4827 Sx: 4.0000 Sy: 4.4577 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.4905 Sx: 4.0000 Sy: 4.4516 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.4982 Sx: 4.0000 Sy: 4.4455 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.5060 Sx: 4.0000 Sy: 4.4394 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.5137 Sx: 4.0000 Sy: 4.4332 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.5215 Sx: 4.0000 Sy: 4.4271 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.5292 Sx: 4.0000 Sy: 4.4209 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.5369 Sx: 4.0000 Sy: 4.4148 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.5446 Sx: 4.0000 Sy: 4.4086 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.5523 Sx: 4.0000 Sy: 4.4024 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.5600 Sx: 4.0000 Sy: 4.3962 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.5676 Sx: 4.0000 Sy: 4.3900 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.5753 Sx: 4.0000 Sy: 4.3837 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.5829 Sx: 4.0000 Sy: 4.3775 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.5906 Sx: 4.0000 Sy: 4.3712 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.5982 Sx: 4.0000 Sy: 4.3650 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.6058 Sx: 4.0000 Sy: 4.3587 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.6134 Sx: 4.0000 Sy: 4.3524 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.6210 Sx: 4.0000 Sy: 4.3461 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.6286 Sx: 4.0000 Sy: 4.3397 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.6362 Sx: 4.0000 Sy: 4.3334 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.6437 Sx: 4.0000 Sy: 4.3270 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.6513 Sx: 4.0000 Sy: 4.3207 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.6588 Sx: 4.0000 Sy: 4.3143 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.6663 Sx: 4.0000 Sy: 4.3079 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.6738 Sx: 4.0000 Sy: 4.3015 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.6813 Sx: 4.0000 Sy: 4.2951 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.6888 Sx: 4.0000 Sy: 4.2887 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.6963 Sx: 4.0000 Sy: 4.2822 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.7038 Sx: 4.0000 Sy: 4.2758 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.7112 Sx: 4.0000 Sy: 4.2693 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.7187 Sx: 4.0000 Sy: 4.2628 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.7261 Sx: 4.0000 Sy: 4.2563 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.7335 Sx: 4.0000 Sy: 4.2498 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.7409 Sx: 4.0000 Sy: 4.2433 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.7483 Sx: 4.0000 Sy: 4.2367 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.7557 Sx: 4.0000 Sy: 4.2302 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.7631 Sx: 4.0000 Sy: 4.2236 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.7705 Sx: 4.0000 Sy: 4.2170 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.7778 Sx: 4.0000 Sy: 4.2105 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.7852 Sx: 4.0000 Sy: 4.2039 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.7925 Sx: 4.0000 Sy: 4.1972 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.7998 Sx: 4.0000 Sy: 4.1906 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.8071 Sx: 4.0000 Sy: 4.1840 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.8144 Sx: 4.0000 Sy: 4.1773 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.8217 Sx: 4.0000 Sy: 4.1707 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.8290 Sx: 4.0000 Sy: 4.1640 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.8363 Sx: 4.0000 Sy: 4.1573 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.8435 Sx: 4.0000 Sy: 4.1506 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.8507 Sx: 4.0000 Sy: 4.1439 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.8580 Sx: 4.0000 Sy: 4.1372 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.8652 Sx: 4.0000 Sy: 4.1304 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.8724 Sx: 4.0000 Sy: 4.1237 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.8796 Sx: 4.0000 Sy: 4.1169 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.8868 Sx: 4.0000 Sy: 4.1101 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.8939 Sx: 4.0000 Sy: 4.1033 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.9011 Sx: 4.0000 Sy: 4.0965 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.9082 Sx: 4.0000 Sy: 4.0897 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.9154 Sx: 4.0000 Sy: 4.0829 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.9225 Sx: 4.0000 Sy: 4.0761 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.9296 Sx: 4.0000 Sy: 4.0692 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.9367 Sx: 4.0000 Sy: 4.0623 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.9438 Sx: 4.0000 Sy: 4.0555 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.9508 Sx: 4.0000 Sy: 4.0486 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.9579 Sx: 4.0000 Sy: 4.0417 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.9649 Sx: 4.0000 Sy: 4.0348 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.9720 Sx: 4.0000 Sy: 4.0278 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.9790 Sx: 4.0000 Sy: 4.0209 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.9860 Sx: 4.0000 Sy: 4.0139 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 3.9930 Sx: 4.0000 Sy: 4.0070 Sz: -0.0000
+Nx: -0.0000 Ny: -0.0000 Nz: 4.0000 Sx: 4.0000 Sy: 4.0000 Sz: -0.0000
+</pre><h2 id="5">Diode Response Curves Plot</h2><p>This section will plot the diode response curves based on one of the angles of degrees of freedom rotating.</p><pre class="codeinput">figure(1)
+<span class="comment">% North X Diode Response</span>
+subplot(3,2,1)
+hold <span class="string">on</span>
+grid <span class="string">on</span>
+plot(angle_array, Diode_NorthX);
+title(<span class="string">'North X Diode'</span>);
+xlabel(<span class="string">'Roll Angle (Degrees)'</span>);
+ylabel(<span class="string">'Light Intensity (W/m^2)'</span>);
+xlim([angle_start, angle_stop]);
+
+<span class="comment">% North Y Diode Response</span>
+subplot(3,2,3)
+hold <span class="string">on</span>
+grid <span class="string">on</span>
+plot(angle_array, Diode_NorthY);
+title(<span class="string">'North Y Diode'</span>);
+xlabel(<span class="string">'Roll Angle (Degrees)'</span>);
+ylabel(<span class="string">'Light Intensity (W/m^2)'</span>);
+xlim([angle_start, angle_stop]);
+
+<span class="comment">% North Z Diode Response</span>
+subplot(3,2,5)
+hold <span class="string">on</span>
+grid <span class="string">on</span>
+plot(angle_array, Diode_NorthZ);
+title(<span class="string">'North Z Diode'</span>);
+xlabel(<span class="string">'Roll Angle (Degrees)'</span>);
+ylabel(<span class="string">'Light Intensity (W/m^2)'</span>);
+xlim([angle_start, angle_stop]);
+
+<span class="comment">% South X Diode Response</span>
+subplot(3,2,2)
+hold <span class="string">on</span>
+grid <span class="string">on</span>
+plot(angle_array, Diode_SouthX);
+title(<span class="string">'South X Diode'</span>);
+xlabel(<span class="string">'Roll Angle (Degrees)'</span>);
+ylabel(<span class="string">'Light Intensity (W/m^2)'</span>);
+xlim([angle_start, angle_stop]);
+
+<span class="comment">% South Y Diode Response</span>
+subplot(3,2,4)
+hold <span class="string">on</span>
+grid <span class="string">on</span>
+plot(angle_array, Diode_SouthY);
+title(<span class="string">'South Y Diode'</span>);
+xlabel(<span class="string">'Roll Angle (Degrees)'</span>);
+ylabel(<span class="string">'Light Intensity (W/m^2)'</span>);
+xlim([angle_start, angle_stop]);
+
+<span class="comment">% South Z Diode Response</span>
+subplot(3,2,6)
+hold <span class="string">on</span>
+grid <span class="string">on</span>
+plot(angle_array, Diode_SouthZ);
+title(<span class="string">'South Z Diode'</span>);
+xlabel(<span class="string">'Roll Angle (Degrees)'</span>);
+ylabel(<span class="string">'Light Intensity (W/m^2)'</span>);
+xlim([angle_start, angle_stop]);
+</pre><img vspace="5" hspace="5" src="ProjectMain_02.png" alt=""> <p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2020b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% ECE 580 Project, Mathematical Model for Cubesat Attitude Sensors
+%
+% REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-
+%
+% Authors:  Sergio Ribeiro
+% Date:     26-APR-2022
+% Class:    ECE 580 Small Satellite Design
+%
+% REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-
+%
+% The purpose of this project is to provide a mathematical model for a
+% cubesat satellite attitude sensor system. The sensor system is a
+% photodiode on each face of the cubesat. There are six sensors in all. The
+% purpose of this program is to model the response of the photodiodes to
+% the sunlight hitting the cubesat in different orientations. For
+% simplicity we will consider a cube of size 2U x 2U x 2U. We are not using
+% a unit cube because we would like our vectors for describing the cube
+% orientation to be unit vectors.
+%
+% REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-
+%
+
+clearvars
+clc
+clf
+format long
+
+%% Rotation Matrices for Roll, Pitch and Yaw
+% Roll Matrix
+x_rot = @(theta)([1, 0, 0; ...
+    0, cosd(theta), -sind(theta); ...
+    0, sind(theta), cosd(theta)]);
+
+% Pitch Matrix
+y_rot = @(theta)([cosd(theta), 0, sind(theta); ...
+    0, 1, 0; ...
+    -sind(theta), 0, cosd(theta)]);
+
+% Yaw Matrix
+z_rot = @(theta)([cosd(theta), -sind(theta), 0; ...
+    sind(theta), cosd(theta), 0; ...
+   0, 0, 1]);
+
+% Combined Roll, Pitch, Yaw matrix
+xyz_rot = @(theta_x, theta_y, theta_z)(x_rot(theta_x) * y_rot (theta_y) * ...
+    z_rot(theta_z));
+
+%% Calculate Flux Based on Spacecraft Orientation
+% Describe the origin as well as the vectors describing each cubesat face
+% Naming convention will be NorthX, NorthY, NorthZ, SouthX, SouthY, SouthZ
+
+% Define the sun flux vector here
+% Units are in W/m^2
+
+Sun_Flux = [1; 1; 1];
+
+% Describe the unit vectors corresponding to spacecraft
+origin = [0; 0; 0];
+north_x = [1; 0; 0];
+north_y = [0; 1; 0];
+north_z = [0; 0; 1];
+south_x = [-1; 0; 0];
+south_y = [0; -1; 0];
+south_z = [0; 0; -1];
+
+
+%% Loop to Calculate Light Flux on All Diodes
+% Loop through various roll, pitch and yaw angles and store the values in
+% an array to store the Diode responses to the varying roll pitch and yaw
+% angles
+
+angle_start = 0;
+angle_step = 0.1;
+angle_stop = 90;
+angle_array = angle_start:angle_step:angle_stop;
+
+Diode_NorthX = [];
+Diode_NorthY = [];
+Diode_NorthZ = [];
+Diode_SouthX = [];
+Diode_SouthY = [];
+Diode_SouthZ = [];
+
+
+
+for i = angle_start:angle_step:angle_stop
+
+% Rotate these by a specified roll, pitch and yaw 
+rot_matrix = xyz_rot(i, 0, 0);
+
+% Calculate the rotated vectors
+rot_north_x = rot_matrix * north_x;
+rot_north_y = rot_matrix * north_y;
+rot_north_z = rot_matrix * north_z;
+rot_south_x = rot_matrix * south_x;
+rot_south_y = rot_matrix * south_y;
+rot_south_z = rot_matrix * south_z;
+
+CubeArea = 4;
+
+CubeFlux = struct('NorthX', -CubeArea * dot(Sun_Flux, rot_north_x), ...
+    'NorthY', -CubeArea * dot(Sun_Flux, rot_north_y), ...
+    'NorthZ', -CubeArea * dot(Sun_Flux, rot_north_z), ...
+    'SouthX', -CubeArea * dot(Sun_Flux, rot_south_x), ...
+    'SouthY', -CubeArea * dot(Sun_Flux, rot_south_y), ...
+    'SouthZ', -CubeArea * dot(Sun_Flux, rot_south_z));
+
+% Zero out diode responses that have negative flux
+% These are calculated by multiplying the response by the boolean
+% expression for what's true when the response is larger than 0
+
+CubeFlux.NorthX = (CubeFlux.NorthX) * (CubeFlux.NorthX >= 0);
+CubeFlux.NorthY = (CubeFlux.NorthY) * (CubeFlux.NorthY >= 0);
+CubeFlux.NorthZ = (CubeFlux.NorthZ) * (CubeFlux.NorthZ >= 0);
+CubeFlux.SouthX = (CubeFlux.SouthX) * (CubeFlux.SouthX >= 0);
+CubeFlux.SouthY = (CubeFlux.SouthY) * (CubeFlux.SouthY >= 0);
+CubeFlux.SouthZ = (CubeFlux.SouthZ) * (CubeFlux.SouthZ >= 0);
+
+% Put the diode response curves in an array to be plotted later
+Diode_NorthX = [Diode_NorthX, CubeFlux.NorthX];
+Diode_NorthY = [Diode_NorthY, CubeFlux.NorthY];
+Diode_NorthZ = [Diode_NorthZ, CubeFlux.NorthZ];
+Diode_SouthX = [Diode_SouthX, CubeFlux.SouthX];
+Diode_SouthY = [Diode_SouthY, CubeFlux.SouthY];
+Diode_SouthZ = [Diode_SouthZ, CubeFlux.SouthZ];
+    
+fprintf('Nx: %5.4f Ny: %5.4f Nz: %5.4f Sx: %5.4f Sy: %5.4f Sz: %5.4f\n', ...
+    CubeFlux.NorthX, CubeFlux.NorthY, CubeFlux.NorthZ, ...
+    CubeFlux.SouthX, CubeFlux.SouthY, CubeFlux.SouthZ);
+
+end
+
+
+%% Diode Response Curves Plot
+% This section will plot the diode response curves based on one of the
+% angles of degrees of freedom rotating.
+
+figure(1)
+% North X Diode Response
+subplot(3,2,1)
+hold on
+grid on
+plot(angle_array, Diode_NorthX);
+title('North X Diode');
+xlabel('Roll Angle (Degrees)');
+ylabel('Light Intensity (W/m^2)');
+xlim([angle_start, angle_stop]);
+
+% North Y Diode Response
+subplot(3,2,3)
+hold on
+grid on
+plot(angle_array, Diode_NorthY);
+title('North Y Diode');
+xlabel('Roll Angle (Degrees)');
+ylabel('Light Intensity (W/m^2)');
+xlim([angle_start, angle_stop]);
+
+% North Z Diode Response
+subplot(3,2,5)
+hold on
+grid on
+plot(angle_array, Diode_NorthZ);
+title('North Z Diode');
+xlabel('Roll Angle (Degrees)');
+ylabel('Light Intensity (W/m^2)');
+xlim([angle_start, angle_stop]);
+
+% South X Diode Response
+subplot(3,2,2)
+hold on
+grid on
+plot(angle_array, Diode_SouthX);
+title('South X Diode');
+xlabel('Roll Angle (Degrees)');
+ylabel('Light Intensity (W/m^2)');
+xlim([angle_start, angle_stop]);
+
+% South Y Diode Response
+subplot(3,2,4)
+hold on
+grid on
+plot(angle_array, Diode_SouthY);
+title('South Y Diode');
+xlabel('Roll Angle (Degrees)');
+ylabel('Light Intensity (W/m^2)');
+xlim([angle_start, angle_stop]);
+
+% South Z Diode Response
+subplot(3,2,6)
+hold on
+grid on
+plot(angle_array, Diode_SouthZ);
+title('South Z Diode');
+xlabel('Roll Angle (Degrees)');
+ylabel('Light Intensity (W/m^2)');
+xlim([angle_start, angle_stop]);
+
+
+
+##### SOURCE END #####
+--></body></html>
