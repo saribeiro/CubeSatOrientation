@@ -59,8 +59,9 @@ xyz_rot = @(theta_x, theta_y, theta_z)(x_rot(theta_x) * y_rot (theta_y) * ...
 % We will use the following convention to name the octants of the three
 % dimensional space.
 
-file_name = 'RollAngleChange.csv';
-DataTable = readtable(file_name, 'HeaderLines', 12);
+file_name = 'PitchAngleChange_2.csv';
+file_path = [fileparts(pwd), '\Data\', file_name];
+DataTable = readtable(file_path, 'HeaderLines', 12);
 DataTable.Properties.VariableNames = {'Nx', 'Ny', 'Nz', ...
     'Sx', 'Sy', 'Sz', 'Roll', 'Pitch', 'Yaw', ...
     'SunFluxX', 'SunFluxY', 'SunFluxZ'

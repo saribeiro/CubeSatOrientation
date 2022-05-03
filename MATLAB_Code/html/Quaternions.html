@@ -1,0 +1,286 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Quaternions</title><meta name="generator" content="MATLAB 9.9"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-05-03"><meta name="DC.source" content="Quaternions.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">ECE 580 Project, Quaternion Examples</a></li><li><a href="#2">Commutative Property does not Apply for Quaternions</a></li><li><a href="#3">Quaternion Rotation of Points</a></li><li><a href="#4">Define a Flat Polygon to Rotate</a></li></ul></div><h2 id="1">ECE 580 Project, Quaternion Examples</h2><p>-------------------------------------------------------------------------</p><p>Authors:  Sergio Ribeiro, Rohith Yerrabelli Date:     26-APR-2022 Class:    ECE 580 Small Satellite Design</p><p>-------------------------------------------------------------------------</p><p>The purpose of this code is to test out MATLAB quaternion capabilities to use for future work on this project. MATLAB has built in quaternion capabilities specifically related to rotation problems.</p><p>-------------------------------------------------------------------------</p><pre class="codeinput">clearvars;
+clc;
+clf;
+format <span class="string">long</span>;
+</pre><img vspace="5" hspace="5" src="Quaternions_01.png" alt=""> <h2 id="2">Commutative Property does not Apply for Quaternions</h2><p>This section demonstrates that quaternion multiplication is not commutative. Neither is it anti-commutative (i.e. A x B = -B x A). Reversing the order changes the output drastically.</p><pre class="codeinput">q1 = quaternion(3, 5, 1, 4);
+q2 = quaternion(2, 1, 5, 1);
+
+q_12 = q1 * q2;
+q_21 = q2 * q1;
+disp(<span class="string">'QUATERNIONS MULTIPLICATION IS NOT COMMUTATIVE'</span>);
+disp(q_12);
+disp(q_21);
+</pre><pre class="codeoutput">QUATERNIONS MULTIPLICATION IS NOT COMMUTATIVE
+
+     -8 -  6i + 16j + 35k
+
+
+     -8 + 32i + 18j - 13k
+
+</pre><h2 id="3">Quaternion Rotation of Points</h2><p>We will build a quaternion rotation system. We need to define the unit vector which will describe the axis of rotation and an angle which will describe the angle by which we rotate around such a defined axis.</p><pre class="codeinput"><span class="comment">% Define a rotation axis and normalize it to a unit vector</span>
+rot_axis = [1, 1, 1];
+rot_axis = rot_axis/norm(rot_axis);
+
+<span class="comment">% Define our angle of rotation in degrees</span>
+rot_angle = 30;
+
+<span class="comment">% Compute the resulting quaternion associated with this rotation</span>
+q_rot = quaternion(cosd(rot_angle/2), <span class="keyword">...</span>
+    rot_axis(1) * sind(rot_angle/2), <span class="keyword">...</span>
+    rot_axis(2) * sind(rot_angle/2), <span class="keyword">...</span>
+    rot_axis(3) * sind(rot_angle/2));
+</pre><h2 id="4">Define a Flat Polygon to Rotate</h2><p>In this section we will define a simple polygon shape to show how quaternion rotation works</p><pre class="codeinput">solid_verts = 0.4 * [1, 1, 1; -1, 1, 1; 1, 1, -1; -1, 1, -1; <span class="keyword">...</span>
+       1, -1, 1; -1, -1, 1; 1, -1, -1; -1, -1, -1];
+solid_faces = [1, 2, 4, 3; 5, 6, 8, 7; <span class="keyword">...</span>
+    1, 5, 7, 3; 2, 6, 8, 4; <span class="keyword">...</span>
+    1, 5, 6, 2; 3, 7, 8, 4];
+
+
+
+figure(1)
+grid <span class="string">on</span>
+hold <span class="string">on</span>
+quiver3(0, 0, 0, rot_axis(1), rot_axis(2), rot_axis(3), <span class="string">'LineWidth'</span>, 1.5);
+text(rot_axis(1), rot_axis(2), rot_axis(3), <span class="string">'Rotation Axis'</span>);
+patch(<span class="string">'Vertices'</span>, solid_verts, <span class="string">'Faces'</span>, solid_faces, <span class="keyword">...</span>
+      <span class="string">'FaceVertexCData'</span>, copper(6), <span class="string">'FaceColor'</span>, <span class="string">'flat'</span>, <span class="keyword">...</span>
+      <span class="string">'FaceAlpha'</span>, 0.2)
+axis([-1, 1, -1, 1, -1, 1]);
+title(<span class="string">'Cube in Original Position'</span>, <span class="string">'interpreter'</span>, <span class="string">'latex'</span>);
+xlabel(<span class="string">'X-Axis'</span>);
+ylabel(<span class="string">'Y-Axis'</span>);
+zlabel(<span class="string">'Z-Axis'</span>);
+view(3)
+axis <span class="string">vis3d</span>
+rotate3d
+
+
+<span class="comment">% Now using the rotation quaternion we defined, rotate all the solid</span>
+<span class="comment">% figures vertices.</span>
+
+rot_verts = zeros(8, 3);
+rot_faces = [1, 2, 4, 3; 5, 6, 8, 7; <span class="keyword">...</span>
+    1, 5, 7, 3; 2, 6, 8, 4; <span class="keyword">...</span>
+    1, 5, 6, 2; 3, 7, 8, 4];
+
+<span class="comment">% We could go the long way and multiply our vectors as q_rot * r *</span>
+<span class="comment">% conj(q_rot). However MATLAB has built in routines for dealing with</span>
+<span class="comment">% quaternions quite efficiently. It would be a waste to re-derive known and</span>
+<span class="comment">% compiled code</span>
+
+<span class="keyword">for</span> i = 1:8
+    rot_verts(i, :) = quatrotate(compact(q_rot), solid_verts(i, :));
+<span class="keyword">end</span>
+
+figure(2)
+grid <span class="string">on</span>
+hold <span class="string">on</span>
+quiver3(0, 0, 0, rot_axis(1), rot_axis(2), rot_axis(3), <span class="string">'LineWidth'</span>, 1.5);
+text(rot_axis(1), rot_axis(2), rot_axis(3), <span class="string">'Rotation Axis'</span>);
+patch(<span class="string">'Vertices'</span>, rot_verts, <span class="string">'Faces'</span>, rot_faces, <span class="keyword">...</span>
+      <span class="string">'FaceVertexCData'</span>, copper(6), <span class="string">'FaceColor'</span>, <span class="string">'flat'</span>, <span class="keyword">...</span>
+      <span class="string">'FaceAlpha'</span>, 0.2)
+axis([-1, 1, -1, 1, -1, 1]);
+title({<span class="string">'Cube Rotated around Vector by '</span>, <span class="keyword">...</span>
+    sprintf(<span class="string">'%2.2f degrees'</span>, rot_angle)}, <span class="string">'interpreter'</span>, <span class="string">'latex'</span>);
+xlabel(<span class="string">'X-Axis'</span>);
+ylabel(<span class="string">'Y-Axis'</span>);
+zlabel(<span class="string">'Z-Axis'</span>);
+view(3)
+axis <span class="string">vis3d</span>
+rotate3d
+</pre><img vspace="5" hspace="5" src="Quaternions_02.png" alt=""> <img vspace="5" hspace="5" src="Quaternions_03.png" alt=""> <p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2020b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% ECE 580 Project, Quaternion Examples
+%
+% REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-
+%
+% Authors:  Sergio Ribeiro, Rohith Yerrabelli
+% Date:     26-APR-2022
+% Class:    ECE 580 Small Satellite Design
+%
+% REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-
+%
+% The purpose of this code is to test out MATLAB quaternion capabilities to
+% use for future work on this project. MATLAB has built in quaternion
+% capabilities specifically related to rotation problems.
+%
+% REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-
+%
+
+
+clearvars;
+clc;
+clf;
+format long;
+
+%% Commutative Property does not Apply for Quaternions
+% This section demonstrates that quaternion multiplication is not
+% commutative. Neither is it anti-commutative (i.e. A x B = -B x A).
+% Reversing the order changes the output drastically.
+
+q1 = quaternion(3, 5, 1, 4);
+q2 = quaternion(2, 1, 5, 1);
+
+q_12 = q1 * q2;
+q_21 = q2 * q1;
+disp('QUATERNIONS MULTIPLICATION IS NOT COMMUTATIVE');
+disp(q_12);
+disp(q_21);
+
+
+%% Quaternion Rotation of Points
+% We will build a quaternion rotation system. We need to define the unit
+% vector which will describe the axis of rotation and an angle which will
+% describe the angle by which we rotate around such a defined axis.
+
+% Define a rotation axis and normalize it to a unit vector
+rot_axis = [1, 1, 1];
+rot_axis = rot_axis/norm(rot_axis);
+
+% Define our angle of rotation in degrees
+rot_angle = 30;
+
+% Compute the resulting quaternion associated with this rotation
+q_rot = quaternion(cosd(rot_angle/2), ...
+    rot_axis(1) * sind(rot_angle/2), ...
+    rot_axis(2) * sind(rot_angle/2), ...
+    rot_axis(3) * sind(rot_angle/2));
+
+
+%% Define a Flat Polygon to Rotate
+% In this section we will define a simple polygon shape to show how
+% quaternion rotation works
+
+solid_verts = 0.4 * [1, 1, 1; -1, 1, 1; 1, 1, -1; -1, 1, -1; ...
+       1, -1, 1; -1, -1, 1; 1, -1, -1; -1, -1, -1];
+solid_faces = [1, 2, 4, 3; 5, 6, 8, 7; ...
+    1, 5, 7, 3; 2, 6, 8, 4; ...
+    1, 5, 6, 2; 3, 7, 8, 4];
+
+
+
+figure(1)
+grid on
+hold on
+quiver3(0, 0, 0, rot_axis(1), rot_axis(2), rot_axis(3), 'LineWidth', 1.5);
+text(rot_axis(1), rot_axis(2), rot_axis(3), 'Rotation Axis');
+patch('Vertices', solid_verts, 'Faces', solid_faces, ...
+      'FaceVertexCData', copper(6), 'FaceColor', 'flat', ...
+      'FaceAlpha', 0.2)
+axis([-1, 1, -1, 1, -1, 1]);
+title('Cube in Original Position', 'interpreter', 'latex');
+xlabel('X-Axis');
+ylabel('Y-Axis');
+zlabel('Z-Axis');
+view(3)
+axis vis3d
+rotate3d
+
+
+% Now using the rotation quaternion we defined, rotate all the solid
+% figures vertices.
+
+rot_verts = zeros(8, 3);
+rot_faces = [1, 2, 4, 3; 5, 6, 8, 7; ...
+    1, 5, 7, 3; 2, 6, 8, 4; ...
+    1, 5, 6, 2; 3, 7, 8, 4];
+
+% We could go the long way and multiply our vectors as q_rot * r *
+% conj(q_rot). However MATLAB has built in routines for dealing with
+% quaternions quite efficiently. It would be a waste to re-derive known and
+% compiled code
+
+for i = 1:8
+    rot_verts(i, :) = quatrotate(compact(q_rot), solid_verts(i, :));
+end
+
+figure(2)
+grid on
+hold on
+quiver3(0, 0, 0, rot_axis(1), rot_axis(2), rot_axis(3), 'LineWidth', 1.5);
+text(rot_axis(1), rot_axis(2), rot_axis(3), 'Rotation Axis');
+patch('Vertices', rot_verts, 'Faces', rot_faces, ...
+      'FaceVertexCData', copper(6), 'FaceColor', 'flat', ...
+      'FaceAlpha', 0.2)
+axis([-1, 1, -1, 1, -1, 1]);
+title({'Cube Rotated around Vector by ', ...
+    sprintf('%2.2f degrees', rot_angle)}, 'interpreter', 'latex');
+xlabel('X-Axis');
+ylabel('Y-Axis');
+zlabel('Z-Axis');
+view(3)
+axis vis3d
+rotate3d
+
+##### SOURCE END #####
+--></body></html>
