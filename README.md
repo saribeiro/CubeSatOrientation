@@ -29,3 +29,7 @@ Script 2 provides a way to compute the diode responses on each cube face and all
 Script 3 is not fully finished, but will provide a method of computing the yaw, pitch and roll based on the sample generated diode data.
 
 Script 4 is merely a demonstration of the capabilities of using quaternion algebra to describe rotations instead of using yaw, pitch and roll matrices. Perhaps future iterations of this project will either make use of quaternions to determine the cube orientation or perhaps even rebuild the mathematical model from the ground up based on quaternion algebra instead of yaw, pitch and roll matrices.
+
+# HTML Folder in MATLAB
+
+The html folder in the MATLAB_Code directory is the output of the "Publish" option in MATLAB. Nice to include if you want to share a code report quickly but other than that it serves no purpose. Not necessary to modify or update, unless you want to.
