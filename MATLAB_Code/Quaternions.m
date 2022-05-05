@@ -31,8 +31,14 @@ q2 = quaternion(2, 1, 5, 1);
 
 q_12 = q1 * q2;
 q_21 = q2 * q1;
-disp('QUATERNIONS MULTIPLICATION IS NOT COMMUTATIVE');
+fprintf('QUATERNIONS MULTIPLICATION IS NOT COMMUTATIVE\n\n');
+fprintf('q1 = ');
+disp(q1);
+fprintf('q2 = ');
+disp(q2);
+fprintf('q1 * q2 = ');
 disp(q_12);
+fprintf('q2 * q1 = ');
 disp(q_21);
 
 
@@ -42,17 +48,23 @@ disp(q_21);
 % describe the angle by which we rotate around such a defined axis.
 
 % Define a rotation axis and normalize it to a unit vector
+fprintf('ROTATION AXIS VECTOR\n');
 rot_axis = [1, 1, 1];
 rot_axis = rot_axis/norm(rot_axis);
+fprintf('%2.4fi + %2.4fj + %2.4fk\n\n', ...
+    rot_axis(1), rot_axis(2), rot_axis(3));
 
 % Define our angle of rotation in degrees
-rot_angle = 30;
+rot_angle = 10;
+fprintf('ROTATION ANGLE: %2.4f\n\n', rot_angle);
 
 % Compute the resulting quaternion associated with this rotation
 q_rot = quaternion(cosd(rot_angle/2), ...
     rot_axis(1) * sind(rot_angle/2), ...
     rot_axis(2) * sind(rot_angle/2), ...
     rot_axis(3) * sind(rot_angle/2));
+fprintf('ROTATION QUATERNION:\n');
+disp(q_rot);
 
 
 %% Define a Flat Polygon to Rotate
@@ -73,7 +85,7 @@ hold on
 quiver3(0, 0, 0, rot_axis(1), rot_axis(2), rot_axis(3), 'LineWidth', 1.5);
 text(rot_axis(1), rot_axis(2), rot_axis(3), 'Rotation Axis');
 patch('Vertices', solid_verts, 'Faces', solid_faces, ...
-      'FaceVertexCData', copper(6), 'FaceColor', 'flat', ...
+      'FaceVertexCData', hsv(6), 'FaceColor', 'flat', ...
       'FaceAlpha', 0.2)
 axis([-1, 1, -1, 1, -1, 1]);
 title('Cube in Original Position', 'interpreter', 'latex');
@@ -108,7 +120,7 @@ hold on
 quiver3(0, 0, 0, rot_axis(1), rot_axis(2), rot_axis(3), 'LineWidth', 1.5);
 text(rot_axis(1), rot_axis(2), rot_axis(3), 'Rotation Axis');
 patch('Vertices', rot_verts, 'Faces', rot_faces, ...
-      'FaceVertexCData', copper(6), 'FaceColor', 'flat', ...
+      'FaceVertexCData', hsv(6), 'FaceColor', 'flat', ...
       'FaceAlpha', 0.2)
 axis([-1, 1, -1, 1, -1, 1]);
 title({'Cube Rotated around Vector by ', ...
@@ -119,3 +131,14 @@ zlabel('Z-Axis');
 view(3)
 axis vis3d
 rotate3d
+
+
+% Verify the quaternion rotation function built into MATLAB performs as
+% expected by comparing it to the mathematical definition of quaternion
+% rotation
+
+r = [3, 4, 5];
+q = quaternion([0, r]);
+
+r_rot1 = quatrotate(compact(q_rot), r);
+r_rot2 = compact(q_rot * q * conj(q_rot));
