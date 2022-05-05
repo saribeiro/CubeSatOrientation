@@ -30,7 +30,7 @@ format long
 % constant vector value at all points in space around the cube. The flux
 % value is expressed in W/m^2
 
-Sun_Flux = [1; 0; 0];
+Sun_Flux = [12; 82; 7];
 
 SunFluxStruct = struct('SunFluxX', Sun_Flux(1), 'SunFluxY', Sun_Flux(2), ...
     'SunFluxZ', Sun_Flux(3));

@@ -59,7 +59,7 @@ xyz_rot = @(theta_x, theta_y, theta_z)(x_rot(theta_x) * y_rot (theta_y) * ...
 % We will use the following convention to name the octants of the three
 % dimensional space.
 
-file_name = 'YawAngleChange.csv';
+file_name = 'PitchAngleChange_3.csv';
 file_path = [fileparts(pwd), '\Data\', file_name];
 DataTable = readtable(file_path, 'HeaderLines', 12);
 DataTable.Properties.VariableNames = {'Nx', 'Ny', 'Nz', ...
@@ -85,8 +85,7 @@ octant_values = {'000', '001', '010', '011', ...
 octantmap = containers.Map(octant_keys, octant_values);
 
 % Next lets read the values from our data table and append the octant in
-% which we can. We will need to add some error handling in case the results
-% of the simulation produce no known octant, but that can wait for later.
+% which we can 
 
 
 for i = 1:max(size(DataTable))
@@ -96,5 +95,4 @@ for i = 1:max(size(DataTable))
 end
 
 % Save the data table into the data folder
-writetable(DataTable, file_path);
 

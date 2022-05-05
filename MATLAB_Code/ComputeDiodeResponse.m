@@ -52,7 +52,7 @@ xyz_rot = @(theta_x, theta_y, theta_z)(x_rot(theta_x) * y_rot (theta_y) * ...
 % Define the sun flux vector here
 % Units are in W/m^2
 
-Sun_Flux = [15; 8; 12];
+Sun_Flux = [12; 82; 7];
 
 % Describe the unit vectors corresponding to spacecraft
 origin = [0; 0; 0];
@@ -82,11 +82,11 @@ Diode_SouthY = [];
 Diode_SouthZ = [];
 
 roll_start = 0;
-pitch_start = 0;
+pitch_start = 30;
 yaw_start = 0;
 
 % Print output data results to a file
-file_name = 'PitchAngleChange_2.csv';
+file_name = 'PitchAngleChange_3.csv';
 file_path = [fileparts(pwd), '\Data\', file_name];
 file_ID = fopen(file_path, 'w');
 
