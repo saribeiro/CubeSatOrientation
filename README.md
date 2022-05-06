@@ -24,7 +24,7 @@ Currently we have the following four scripts in our GitHub repository,
 
 Script 1 provides a user friendly way for someone wanting to quickly compute diode response on the faces of a cubesat given a known flux vector that represents the light intensity and direction. It also provides a method to figure out the yaw, pitch and roll based on comparing the maximum flux to the flux falling on  the cube face. 
 
-Script 2 provides a way to compute the diode responses on each cube face and allows us to perterb either the pitch, roll or yaw angle by a specified amount and in discrete steps that are specified.
+Script 2 provides a way to compute the diode responses on each cube face and allows us to perturb either the pitch, roll or yaw angle by a specified amount and in discrete steps that are specified.
 
 Script 3 is not fully finished, but will provide a method of computing the yaw, pitch and roll based on the sample generated diode data.
 
