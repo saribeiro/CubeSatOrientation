@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>ProjectMain</title><meta name="generator" content="MATLAB 9.9"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-05-03"><meta name="DC.source" content="ProjectMain.m"><style type="text/css">
+      --><title>ProjectMain</title><meta name="generator" content="MATLAB 9.9"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-05-07"><meta name="DC.source" content="ProjectMain.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -67,28 +67,11 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">ECE 580 Project, Mathematical Model for Cubesat Attitude Sensors</a></li><li><a href="#2">Rotation Matrices for Roll, Pitch and Yaw</a></li><li><a href="#3">Calculating Roll, Pitch and Yaw based on Simulated Diode Response</a></li><li><a href="#4">Compute Angles</a></li></ul></div><h2 id="1">ECE 580 Project, Mathematical Model for Cubesat Attitude Sensors</h2><p>-------------------------------------------------------------------------</p><p>Authors:  Sergio Ribeiro, Rohith Yerrabelli Date:     26-APR-2022 Class:    ECE 580 Small Satellite Design</p><p>-------------------------------------------------------------------------</p><p>The purpose of this project is to provide a mathematical model for a cubesat satellite attitude sensor system. The sensor system is a photodiode on each face of the cubesat. There are six sensors in all. The purpose of this program is to model the response of the photodiodes to the sunlight hitting the cubesat in different orientations. For simplicity we will consider a cube of size 2U x 2U x 2U. We are not using a unit cube because we would like our vectors for describing the cube orientation to be unit vectors.</p><p>-------------------------------------------------------------------------</p><pre class="codeinput">clearvars
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">ECE 580 Project, Mathematical Model for Cubesat Attitude Sensors</a></li><li><a href="#2">Calculating Roll, Pitch and Yaw based on Simulated Diode Response</a></li><li><a href="#3">Compute Angles</a></li></ul></div><h2 id="1">ECE 580 Project, Mathematical Model for Cubesat Attitude Sensors</h2><p>-------------------------------------------------------------------------</p><p>Authors:  Sergio Ribeiro Date:     07-MAY-2022 Class:    ECE 580 Small Satellite Design</p><p>-------------------------------------------------------------------------</p><p>The purpose of this project is to provide a mathematical model for a cubesat satellite attitude sensor system. The sensor system is a photodiode on each face of the cubesat. There are six sensors in all. The purpose of this program is to model the response of the photodiodes to the sunlight hitting the cubesat in different orientations. For simplicity we will consider a cube of size 2U x 2U x 2U. We are not using a unit cube because we would like our vectors for describing the cube orientation to be unit vectors.</p><p>-------------------------------------------------------------------------</p><pre class="codeinput">clearvars
 clc
 clf
 format <span class="string">long</span>
-</pre><img vspace="5" hspace="5" src="ProjectMain_01.png" alt=""> <h2 id="2">Rotation Matrices for Roll, Pitch and Yaw</h2><p>Roll Matrix</p><pre class="codeinput">x_rot = @(theta)([1, 0, 0; <span class="keyword">...</span>
-    0, cosd(theta), -sind(theta); <span class="keyword">...</span>
-    0, sind(theta), cosd(theta)]);
-
-<span class="comment">% Pitch Matrix</span>
-y_rot = @(theta)([cosd(theta), 0, sind(theta); <span class="keyword">...</span>
-    0, 1, 0; <span class="keyword">...</span>
-    -sind(theta), 0, cosd(theta)]);
-
-<span class="comment">% Yaw Matrix</span>
-z_rot = @(theta)([cosd(theta), -sind(theta), 0; <span class="keyword">...</span>
-    sind(theta), cosd(theta), 0; <span class="keyword">...</span>
-   0, 0, 1]);
-
-<span class="comment">% Combined Roll, Pitch, Yaw matrix</span>
-xyz_rot = @(theta_x, theta_y, theta_z)(x_rot(theta_x) * y_rot (theta_y) * <span class="keyword">...</span>
-    z_rot(theta_z));
-</pre><h2 id="3">Calculating Roll, Pitch and Yaw based on Simulated Diode Response</h2><p>In this section we will pull the simulated diode responses from the "ComputeDiodeResponse.m" code to attempt to figure out the cubesat orientation.</p><pre class="codeinput"><span class="comment">% There are some simplifying assumptions we can make about the cubesat</span>
+</pre><img vspace="5" hspace="5" src="ProjectMain_01.png" alt=""> <h2 id="2">Calculating Roll, Pitch and Yaw based on Simulated Diode Response</h2><p>In this section we will pull the simulated diode responses from the "ComputeDiodeResponse.m" code to attempt to figure out the cubesat orientation.</p><pre class="codeinput"><span class="comment">% There are some simplifying assumptions we can make about the cubesat</span>
 <span class="comment">% orientation. Since only three of the face of the satellite can be</span>
 <span class="comment">% illumniated at a time, we can at least figure out what octant the cubesat</span>
 <span class="comment">% is generally oriented in in three dimensional space.</span>
@@ -96,21 +79,48 @@ xyz_rot = @(theta_x, theta_y, theta_z)(x_rot(theta_x) * y_rot (theta_y) * <span 
 <span class="comment">% We will use the following convention to name the octants of the three</span>
 <span class="comment">% dimensional space.</span>
 
-file_name = <span class="string">'PitchAngleChange_2.csv'</span>;
+file_name = <span class="string">'PitchAngleChange.csv'</span>;
 file_path = [fileparts(pwd), <span class="string">'\Data\'</span>, file_name];
 DataTable = readtable(file_path, <span class="string">'HeaderLines'</span>, 12);
 DataTable.Properties.VariableNames = {<span class="string">'Nx'</span>, <span class="string">'Ny'</span>, <span class="string">'Nz'</span>, <span class="keyword">...</span>
     <span class="string">'Sx'</span>, <span class="string">'Sy'</span>, <span class="string">'Sz'</span>, <span class="string">'Roll'</span>, <span class="string">'Pitch'</span>, <span class="string">'Yaw'</span>, <span class="keyword">...</span>
     <span class="string">'SunFluxX'</span>, <span class="string">'SunFluxY'</span>, <span class="string">'SunFluxZ'</span>
 };
-</pre><h2 id="4">Compute Angles</h2><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2020b</a><br></p></div><!--
+</pre><pre class="codeoutput error">Error using ProjectMain (line 44)
+The VariableNames property must contain one name for each variable in the table.
+</pre><h2 id="3">Compute Angles</h2><p>This script will attempt to compute the angles based on the data tables we are given. Let's read each row of the data table and compute what octant our cube is receiving light in.</p><pre class="codeinput"><span class="comment">% Lets program our octant lookup table as a dictionary. Python's built in</span>
+<span class="comment">% type dictionary in not in MATLAB. MATLAB uses container maps. As</span>
+<span class="comment">% described in our paper we are using the octant naming convention</span>
+<span class="comment">% developed.</span>
+
+octant_keys = {<span class="string">'000111'</span>, <span class="string">'001110'</span>, <span class="string">'010101'</span>, <span class="string">'011100'</span>, <span class="keyword">...</span>
+    <span class="string">'100011'</span>, <span class="string">'101010'</span>, <span class="string">'110001'</span>, <span class="string">'111000'</span>};
+octant_values = {<span class="string">'000'</span>, <span class="string">'001'</span>, <span class="string">'010'</span>, <span class="string">'011'</span>, <span class="keyword">...</span>
+    <span class="string">'100'</span>, <span class="string">'101'</span>, <span class="string">'110'</span>, <span class="string">'111'</span>};
+
+octantmap = containers.Map(octant_keys, octant_values);
+
+<span class="comment">% Next lets read the values from our data table and append the octant in</span>
+<span class="comment">% which we can. We will need to add some error handling in case the results</span>
+<span class="comment">% of the simulation produce no known octant, but that can wait for later.</span>
+
+
+<span class="keyword">for</span> i = 1:max(size(DataTable))
+    faces_lit = num2str(table2array(DataTable(i, 1:6)) &gt; 0);
+    faces_lit = faces_lit(find(~isspace(faces_lit)));
+    DataTable.Octant(i) = {octantmap(faces_lit)};
+<span class="keyword">end</span>
+
+<span class="comment">% Save the data table into the data folder</span>
+writetable(DataTable, file_path);
+</pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2020b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% ECE 580 Project, Mathematical Model for Cubesat Attitude Sensors
 %
 % REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-
 %
-% Authors:  Sergio Ribeiro, Rohith Yerrabelli
-% Date:     26-APR-2022
+% Authors:  Sergio Ribeiro
+% Date:     07-MAY-2022
 % Class:    ECE 580 Small Satellite Design
 %
 % REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-
@@ -132,27 +142,6 @@ clc
 clf
 format long
 
-%% Rotation Matrices for Roll, Pitch and Yaw
-% Roll Matrix
-x_rot = @(theta)([1, 0, 0; ...
-    0, cosd(theta), -sind(theta); ...
-    0, sind(theta), cosd(theta)]);
-
-% Pitch Matrix
-y_rot = @(theta)([cosd(theta), 0, sind(theta); ...
-    0, 1, 0; ...
-    -sind(theta), 0, cosd(theta)]);
-
-% Yaw Matrix
-z_rot = @(theta)([cosd(theta), -sind(theta), 0; ...
-    sind(theta), cosd(theta), 0; ...
-   0, 0, 1]);
-
-% Combined Roll, Pitch, Yaw matrix
-xyz_rot = @(theta_x, theta_y, theta_z)(x_rot(theta_x) * y_rot (theta_y) * ...
-    z_rot(theta_z));
-
-
 %% Calculating Roll, Pitch and Yaw based on Simulated Diode Response
 % In this section we will pull the simulated diode responses from the
 % "ComputeDiodeResponse.m" code to attempt to figure out the cubesat
@@ -166,7 +155,7 @@ xyz_rot = @(theta_x, theta_y, theta_z)(x_rot(theta_x) * y_rot (theta_y) * ...
 % We will use the following convention to name the octants of the three
 % dimensional space.
 
-file_name = 'PitchAngleChange_2.csv';
+file_name = 'PitchAngleChange.csv';
 file_path = [fileparts(pwd), '\Data\', file_name];
 DataTable = readtable(file_path, 'HeaderLines', 12);
 DataTable.Properties.VariableNames = {'Nx', 'Ny', 'Nz', ...
@@ -175,6 +164,35 @@ DataTable.Properties.VariableNames = {'Nx', 'Ny', 'Nz', ...
 };
 
 %% Compute Angles
+% This script will attempt to compute the angles based on the data tables
+% we are given. Let's read each row of the data table and compute what
+% octant our cube is receiving light in.
+
+% Lets program our octant lookup table as a dictionary. Python's built in
+% type dictionary in not in MATLAB. MATLAB uses container maps. As
+% described in our paper we are using the octant naming convention
+% developed.
+
+octant_keys = {'000111', '001110', '010101', '011100', ...
+    '100011', '101010', '110001', '111000'};
+octant_values = {'000', '001', '010', '011', ...
+    '100', '101', '110', '111'};
+
+octantmap = containers.Map(octant_keys, octant_values);
+
+% Next lets read the values from our data table and append the octant in
+% which we can. We will need to add some error handling in case the results
+% of the simulation produce no known octant, but that can wait for later.
+
+
+for i = 1:max(size(DataTable))
+    faces_lit = num2str(table2array(DataTable(i, 1:6)) > 0);
+    faces_lit = faces_lit(find(~isspace(faces_lit)));
+    DataTable.Octant(i) = {octantmap(faces_lit)};
+end
+
+% Save the data table into the data folder
+writetable(DataTable, file_path);
 
 
 ##### SOURCE END #####

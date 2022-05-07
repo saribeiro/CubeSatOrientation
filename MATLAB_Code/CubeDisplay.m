@@ -2,8 +2,8 @@
 %
 % -------------------------------------------------------------------------
 %
-% Authors:  Sergio Ribeiro, Rohith Yerrabelli
-% Date:     26-APR-2022
+% Authors:  Sergio Ribeiro
+% Date:     07-MAY-2022
 % Class:    ECE 580 Small Satellite Design
 %
 % -------------------------------------------------------------------------
@@ -82,54 +82,26 @@ rotate3d
 % In order to simulate the cube turning in different orientations we need
 % to specify how it turns about the three axes by degrees. These changes
 % are referred to as 'pitch', 'roll' and 'yaw'. Yaw is rotation about the
-% z-axis in a clockwise fashion. Pitch is a rotation about the
-% y-axis in a clockwise fashion. Roll is a rotation about the x-axis
-% in a clockwise fashion. Here we define these standard matrices to
-% compute these rotations.
+% z-axis in a counter-clockwise fashion. Pitch is a rotation about the
+% y-axis in a counter-clockwise fashion. Roll is a rotation about the x-axis
+% in a counter-clockwise fashion.
 
-%
-% ------------------------------------------------------------------------
-%
-% DO NOT MODIFY THIS SECTION / STANDARD ROTATION MATRICES
-%
-% ------------------------------------------------------------------------
-%
-% Roll Matrix
-x_rot = @(theta)([1, 0, 0; ...
-    0, cosd(theta), -sind(theta); ...
-    0, sind(theta), cosd(theta)]);
-
-% Pitch Matrix
-y_rot = @(theta)([cosd(theta), 0, sind(theta); ...
-    0, 1, 0; ...
-    -sind(theta), 0, cosd(theta)]);
-
-% Yaw Matrix
-z_rot = @(theta)([cosd(theta), -sind(theta), 0; ...
-    sind(theta), cosd(theta), 0; ...
-   0, 0, 1]);
-
-% Combined Roll, Pitch, Yaw matrix
-xyz_rot = @(theta_x, theta_y, theta_z)(x_rot(theta_x) * y_rot (theta_y) * ...
-    z_rot(theta_z));
-
-%
-% ------------------------------------------------------------------------
-%
-
-%% Rotated Cube
-% This section will test out our roll, pitch and yaw matrix to see if we
-% can get a cube that is properly rotated
+% Make use of MATLABs built in DCM (Direction Cosine Matrix) to compute the
+% rotation matrix and specify the rotation sequence (i.e. XYZ, ZYX etc.)
 
 roll = 0; % X Rotation
 pitch = 0; % Y Rotation
 yaw = 10; % Z Rotation
 
+rot_matrix = angle2dcm(deg2rad(roll), deg2rad(pitch), deg2rad(yaw), 'XYZ');
+
+%% Rotated Cube
+% This section will test out our roll, pitch and yaw matrix to see if we
+% can get a cube that is properly rotated
+
 CubeOrientation = struct('Roll', roll, 'Pitch', pitch, 'Yaw', yaw);
 disp('CURRENT CUBE ORIENTATION');
 disp(CubeOrientation);
-
-rot_matrix = xyz_rot(roll, pitch, yaw);
 
 north_x_rot = rot_matrix * north_x;
 north_y_rot = rot_matrix * north_y;

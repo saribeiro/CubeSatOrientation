@@ -2,8 +2,8 @@
 %
 % -------------------------------------------------------------------------
 %
-% Authors:  Sergio Ribeiro, Rohith Yerrabelli
-% Date:     26-APR-2022
+% Authors:  Sergio Ribeiro
+% Date:     07-MAY-2022
 % Class:    ECE 580 Small Satellite Design
 %
 % -------------------------------------------------------------------------

@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>ComputeDiodeResponse</title><meta name="generator" content="MATLAB 9.9"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-05-03"><meta name="DC.source" content="ComputeDiodeResponse.m"><style type="text/css">
+      --><title>ComputeDiodeResponse</title><meta name="generator" content="MATLAB 9.9"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-05-07"><meta name="DC.source" content="ComputeDiodeResponse.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -67,31 +67,14 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">ECE 580 Project, Mathematical Model for Cubesat Attitude Sensors</a></li><li><a href="#2">Rotation Matrices for Roll, Pitch and Yaw</a></li><li><a href="#3">Calculate Flux Based on Spacecraft Orientation</a></li><li><a href="#4">Loop to Calculate Light Flux on All Diodes</a></li><li><a href="#5">Diode Response Curves Plot</a></li></ul></div><h2 id="1">ECE 580 Project, Mathematical Model for Cubesat Attitude Sensors</h2><p>-------------------------------------------------------------------------</p><p>Authors:  Sergio Ribeiro, Rohith Yerrabelli Date:     26-APR-2022 Class:    ECE 580 Small Satellite Design</p><p>-------------------------------------------------------------------------</p><p>The purpose of this project is to provide a mathematical model for a cubesat satellite attitude sensor system. The sensor system is a photodiode on each face of the cubesat. There are six sensors in all. The purpose of this program is to model the response of the photodiodes to the sunlight hitting the cubesat in different orientations. For simplicity we will consider a cube of size 2U x 2U x 2U. We are not using a unit cube because we would like our vectors for describing the cube orientation to be unit vectors.</p><p>-------------------------------------------------------------------------</p><pre class="codeinput">clearvars
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">ECE 580 Project, Mathematical Model for Cubesat Attitude Sensors</a></li><li><a href="#2">Calculate Flux Based on Spacecraft Orientation</a></li><li><a href="#3">Loop to Calculate Light Flux on All Diodes</a></li><li><a href="#4">Diode Response Curves Plot</a></li></ul></div><h2 id="1">ECE 580 Project, Mathematical Model for Cubesat Attitude Sensors</h2><p>-------------------------------------------------------------------------</p><p>Authors:  Sergio Ribeiro Date:     07-MAY-2022 Class:    ECE 580 Small Satellite Design</p><p>-------------------------------------------------------------------------</p><p>The purpose of this project is to provide a mathematical model for a cubesat satellite attitude sensor system. The sensor system is a photodiode on each face of the cubesat. There are six sensors in all. The purpose of this program is to model the response of the photodiodes to the sunlight hitting the cubesat in different orientations. For simplicity we will consider a cube of size 2U x 2U x 2U. We are not using a unit cube because we would like our vectors for describing the cube orientation to be unit vectors.</p><p>-------------------------------------------------------------------------</p><pre class="codeinput">clearvars
 clc
 clf
 format <span class="string">long</span>
-</pre><img vspace="5" hspace="5" src="ComputeDiodeResponse_01.png" alt=""> <h2 id="2">Rotation Matrices for Roll, Pitch and Yaw</h2><p>Roll Matrix</p><pre class="codeinput">x_rot = @(theta)([1, 0, 0; <span class="keyword">...</span>
-    0, cosd(theta), -sind(theta); <span class="keyword">...</span>
-    0, sind(theta), cosd(theta)]);
-
-<span class="comment">% Pitch Matrix</span>
-y_rot = @(theta)([cosd(theta), 0, sind(theta); <span class="keyword">...</span>
-    0, 1, 0; <span class="keyword">...</span>
-    -sind(theta), 0, cosd(theta)]);
-
-<span class="comment">% Yaw Matrix</span>
-z_rot = @(theta)([cosd(theta), -sind(theta), 0; <span class="keyword">...</span>
-    sind(theta), cosd(theta), 0; <span class="keyword">...</span>
-   0, 0, 1]);
-
-<span class="comment">% Combined Roll, Pitch, Yaw matrix</span>
-xyz_rot = @(theta_x, theta_y, theta_z)(x_rot(theta_x) * y_rot (theta_y) * <span class="keyword">...</span>
-    z_rot(theta_z));
-</pre><h2 id="3">Calculate Flux Based on Spacecraft Orientation</h2><p>Describe the origin as well as the vectors describing each cubesat face Naming convention will be NorthX, NorthY, NorthZ, SouthX, SouthY, SouthZ</p><pre class="codeinput"><span class="comment">% Define the sun flux vector here</span>
+</pre><img vspace="5" hspace="5" src="ComputeDiodeResponse_01.png" alt=""> <h2 id="2">Calculate Flux Based on Spacecraft Orientation</h2><p>Describe the origin as well as the vectors describing each cubesat face Naming convention will be NorthX, NorthY, NorthZ, SouthX, SouthY, SouthZ</p><pre class="codeinput"><span class="comment">% Define the sun flux vector here</span>
 <span class="comment">% Units are in W/m^2</span>
 
-Sun_Flux = [15; 8; 12];
+Sun_Flux = [12; 82; 7];
 
 <span class="comment">% Describe the unit vectors corresponding to spacecraft</span>
 origin = [0; 0; 0];
@@ -101,7 +84,7 @@ north_z = [0; 0; 1];
 south_x = [-1; 0; 0];
 south_y = [0; -1; 0];
 south_z = [0; 0; -1];
-</pre><h2 id="4">Loop to Calculate Light Flux on All Diodes</h2><p>Loop through various roll, pitch and yaw angles and store the values in an array to store the Diode responses to the varying roll pitch and yaw angles</p><pre class="codeinput">angle_start = 0;
+</pre><h2 id="3">Loop to Calculate Light Flux on All Diodes</h2><p>Loop through various roll, pitch and yaw angles and store the values in an array to store the Diode responses to the varying roll pitch and yaw angles</p><pre class="codeinput">angle_start = 0;
 angle_step = 0.1;
 angle_stop = 90;
 angle_array = angle_start:angle_step:angle_stop;
@@ -118,7 +101,7 @@ pitch_start = 0;
 yaw_start = 0;
 
 <span class="comment">% Print output data results to a file</span>
-file_name = <span class="string">'PitchAngleChange_2.csv'</span>;
+file_name = <span class="string">'PitchAngleChange_3.csv'</span>;
 file_path = [fileparts(pwd), <span class="string">'\Data\'</span>, file_name];
 file_ID = fopen(file_path, <span class="string">'w'</span>);
 
@@ -128,7 +111,11 @@ fprintf(file_ID, <span class="keyword">...</span>
 <span class="keyword">for</span> i = angle_start:angle_step:angle_stop
 
 <span class="comment">% Rotate these by a specified roll, pitch and yaw</span>
-rot_matrix = xyz_rot(roll_start, pitch_start + i, yaw_start);
+<span class="comment">% Use MATLABs built in DCM (direction cosine matrix) functionality</span>
+
+rot_matrix = angle2dcm(deg2rad(roll_start), <span class="keyword">...</span>
+    deg2rad(pitch_start + i), <span class="keyword">...</span>
+    deg2rad(yaw_start), <span class="string">'XYZ'</span>);
 
 <span class="comment">% Calculate the rotated vectors</span>
 rot_north_x = rot_matrix * north_x;
@@ -179,7 +166,7 @@ fprintf(file_ID, <span class="string">'%5.8f, %5.8f, %5.8f\n'</span>, <span clas
 <span class="keyword">end</span>
 
 fclose(file_ID);
-</pre><h2 id="5">Diode Response Curves Plot</h2><p>This section will plot the diode response curves based on one of the angles of degrees of freedom rotating.</p><pre class="codeinput">xlabel_string = <span class="string">'Pitch Angle (degrees)'</span>;
+</pre><h2 id="4">Diode Response Curves Plot</h2><p>This section will plot the diode response curves based on one of the angles of degrees of freedom rotating.</p><pre class="codeinput">xlabel_string = <span class="string">'Pitch Angle (degrees)'</span>;
 
 figure(1)
 <span class="comment">% North X Diode Response</span>
@@ -247,8 +234,8 @@ xlim([angle_start, angle_stop]);
 %
 % REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-
 %
-% Authors:  Sergio Ribeiro, Rohith Yerrabelli
-% Date:     26-APR-2022
+% Authors:  Sergio Ribeiro
+% Date:     07-MAY-2022
 % Class:    ECE 580 Small Satellite Design
 %
 % REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-
@@ -270,26 +257,6 @@ clc
 clf
 format long
 
-%% Rotation Matrices for Roll, Pitch and Yaw
-% Roll Matrix
-x_rot = @(theta)([1, 0, 0; ...
-    0, cosd(theta), -sind(theta); ...
-    0, sind(theta), cosd(theta)]);
-
-% Pitch Matrix
-y_rot = @(theta)([cosd(theta), 0, sind(theta); ...
-    0, 1, 0; ...
-    -sind(theta), 0, cosd(theta)]);
-
-% Yaw Matrix
-z_rot = @(theta)([cosd(theta), -sind(theta), 0; ...
-    sind(theta), cosd(theta), 0; ...
-   0, 0, 1]);
-
-% Combined Roll, Pitch, Yaw matrix
-xyz_rot = @(theta_x, theta_y, theta_z)(x_rot(theta_x) * y_rot (theta_y) * ...
-    z_rot(theta_z));
-
 %% Calculate Flux Based on Spacecraft Orientation
 % Describe the origin as well as the vectors describing each cubesat face
 % Naming convention will be NorthX, NorthY, NorthZ, SouthX, SouthY, SouthZ
@@ -297,7 +264,7 @@ xyz_rot = @(theta_x, theta_y, theta_z)(x_rot(theta_x) * y_rot (theta_y) * ...
 % Define the sun flux vector here
 % Units are in W/m^2
 
-Sun_Flux = [15; 8; 12];
+Sun_Flux = [12; 82; 7];
 
 % Describe the unit vectors corresponding to spacecraft
 origin = [0; 0; 0];
@@ -331,7 +298,7 @@ pitch_start = 0;
 yaw_start = 0;
 
 % Print output data results to a file
-file_name = 'PitchAngleChange_2.csv';
+file_name = 'PitchAngleChange_3.csv';
 file_path = [fileparts(pwd), '\Data\', file_name];
 file_ID = fopen(file_path, 'w');
 
@@ -340,8 +307,12 @@ fprintf(file_ID, ...
 
 for i = angle_start:angle_step:angle_stop
 
-% Rotate these by a specified roll, pitch and yaw 
-rot_matrix = xyz_rot(roll_start, pitch_start + i, yaw_start);
+% Rotate these by a specified roll, pitch and yaw
+% Use MATLABs built in DCM (direction cosine matrix) functionality
+
+rot_matrix = angle2dcm(deg2rad(roll_start), ...
+    deg2rad(pitch_start + i), ...
+    deg2rad(yaw_start), 'XYZ');
 
 % Calculate the rotated vectors
 rot_north_x = rot_matrix * north_x;

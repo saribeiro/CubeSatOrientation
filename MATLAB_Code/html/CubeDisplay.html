@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>CubeDisplay</title><meta name="generator" content="MATLAB 9.9"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-05-03"><meta name="DC.source" content="CubeDisplay.m"><style type="text/css">
+      --><title>CubeDisplay</title><meta name="generator" content="MATLAB 9.9"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-05-07"><meta name="DC.source" content="CubeDisplay.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -67,20 +67,20 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">ECE 580 Project, Mathematical Model for Cubesat Attitude Sensors</a></li><li><a href="#2">Sun Source Simulation</a></li><li><a href="#3">Cube Setup</a></li><li><a href="#4">Pitch, Yaw and Roll Matrices</a></li><li><a href="#5">Rotated Cube</a></li><li><a href="#6">Compute the Light Flux</a></li><li><a href="#7">Get Angles</a></li></ul></div><h2 id="1">ECE 580 Project, Mathematical Model for Cubesat Attitude Sensors</h2><p>-------------------------------------------------------------------------</p><p>Authors:  Sergio Ribeiro, Rohith Yerrabelli Date:     26-APR-2022 Class:    ECE 580 Small Satellite Design</p><p>-------------------------------------------------------------------------</p><p>The purpose of this project is to provide a mathematical model for a cubesat satellite attitude sensor system. The sensor system is a photodiode on each face of the cubesat. There are six sensors in all. The purpose of this program is to model the response of the photodiodes to the sunlight hitting the cubesat in different orientations. For simplicity we will consider a cube of size 2U x 2U x 2U. We are not using a unit cube because we would like our vectors for describing the cube orientation to be unit vectors.</p><p>-------------------------------------------------------------------------</p><pre class="codeinput">clearvars
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">ECE 580 Project, Mathematical Model for Cubesat Attitude Sensors</a></li><li><a href="#2">Sun Source Simulation</a></li><li><a href="#3">Cube Setup</a></li><li><a href="#4">Pitch, Yaw and Roll Matrices</a></li><li><a href="#5">Rotated Cube</a></li><li><a href="#6">Compute the Light Flux</a></li><li><a href="#7">Get Angles</a></li></ul></div><h2 id="1">ECE 580 Project, Mathematical Model for Cubesat Attitude Sensors</h2><p>-------------------------------------------------------------------------</p><p>Authors:  Sergio Ribeiro Date:     07-MAY-2022 Class:    ECE 580 Small Satellite Design</p><p>-------------------------------------------------------------------------</p><p>The purpose of this project is to provide a mathematical model for a cubesat satellite attitude sensor system. The sensor system is a photodiode on each face of the cubesat. There are six sensors in all. The purpose of this program is to model the response of the photodiodes to the sunlight hitting the cubesat in different orientations. For simplicity we will consider a cube of size 2U x 2U x 2U. We are not using a unit cube because we would like our vectors for describing the cube orientation to be unit vectors.</p><p>-------------------------------------------------------------------------</p><pre class="codeinput">clearvars
 clc
 clf
 format <span class="string">long</span>
-</pre><img vspace="5" hspace="5" src="CubeDisplay_01.png" alt=""> <h2 id="2">Sun Source Simulation</h2><p>The sun source will be simulated as a constant flux vector field. It is a constant vector value at all points in space around the cube. The flux value is expressed in W/m^2</p><pre class="codeinput">Sun_Flux = [1; 0; 0];
+</pre><img vspace="5" hspace="5" src="CubeDisplay_01.png" alt=""> <h2 id="2">Sun Source Simulation</h2><p>The sun source will be simulated as a constant flux vector field. It is a constant vector value at all points in space around the cube. The flux value is expressed in W/m^2</p><pre class="codeinput">Sun_Flux = [12; 82; 7];
 
 SunFluxStruct = struct(<span class="string">'SunFluxX'</span>, Sun_Flux(1), <span class="string">'SunFluxY'</span>, Sun_Flux(2), <span class="keyword">...</span>
     <span class="string">'SunFluxZ'</span>, Sun_Flux(3));
 disp(<span class="string">'SUN FLUX VECTOR'</span>);
 disp(SunFluxStruct);
 </pre><pre class="codeoutput">SUN FLUX VECTOR
-    SunFluxX: 1
-    SunFluxY: 0
-    SunFluxZ: 0
+    SunFluxX: 12
+    SunFluxY: 82
+    SunFluxZ: 7
 
 </pre><h2 id="3">Cube Setup</h2><pre class="codeinput"><span class="comment">% Setup our origin unit vectors</span>
 origin = [0; 0; 0];
@@ -118,44 +118,17 @@ patch(<span class="string">'Vertices'</span>, cube_verts, <span class="string">'
 view(3)
 axis <span class="string">vis3d</span>
 rotate3d
-</pre><img vspace="5" hspace="5" src="CubeDisplay_02.png" alt=""> <h2 id="4">Pitch, Yaw and Roll Matrices</h2><p>In order to simulate the cube turning in different orientations we need to specify how it turns about the three axes by degrees. These changes are referred to as 'pitch', 'roll' and 'yaw'. Yaw is rotation about the z-axis in a clockwise fashion. Pitch is a rotation about the y-axis in a clockwise fashion. Roll is a rotation about the x-axis in a clockwise fashion. Here we define these standard matrices to compute these rotations.</p><pre class="codeinput"><span class="comment">%</span>
-<span class="comment">% ------------------------------------------------------------------------</span>
-<span class="comment">%</span>
-<span class="comment">% DO NOT MODIFY THIS SECTION / STANDARD ROTATION MATRICES</span>
-<span class="comment">%</span>
-<span class="comment">% ------------------------------------------------------------------------</span>
-<span class="comment">%</span>
-<span class="comment">% Roll Matrix</span>
-x_rot = @(theta)([1, 0, 0; <span class="keyword">...</span>
-    0, cosd(theta), -sind(theta); <span class="keyword">...</span>
-    0, sind(theta), cosd(theta)]);
+</pre><img vspace="5" hspace="5" src="CubeDisplay_02.png" alt=""> <h2 id="4">Pitch, Yaw and Roll Matrices</h2><p>In order to simulate the cube turning in different orientations we need to specify how it turns about the three axes by degrees. These changes are referred to as 'pitch', 'roll' and 'yaw'. Yaw is rotation about the z-axis in a counter-clockwise fashion. Pitch is a rotation about the y-axis in a counter-clockwise fashion. Roll is a rotation about the x-axis in a counter-clockwise fashion.</p><pre class="codeinput"><span class="comment">% Make use of MATLABs built in DCM (Direction Cosine Matrix) to compute the</span>
+<span class="comment">% rotation matrix and specify the rotation sequence (i.e. XYZ, ZYX etc.)</span>
 
-<span class="comment">% Pitch Matrix</span>
-y_rot = @(theta)([cosd(theta), 0, sind(theta); <span class="keyword">...</span>
-    0, 1, 0; <span class="keyword">...</span>
-    -sind(theta), 0, cosd(theta)]);
-
-<span class="comment">% Yaw Matrix</span>
-z_rot = @(theta)([cosd(theta), -sind(theta), 0; <span class="keyword">...</span>
-    sind(theta), cosd(theta), 0; <span class="keyword">...</span>
-   0, 0, 1]);
-
-<span class="comment">% Combined Roll, Pitch, Yaw matrix</span>
-xyz_rot = @(theta_x, theta_y, theta_z)(x_rot(theta_x) * y_rot (theta_y) * <span class="keyword">...</span>
-    z_rot(theta_z));
-
-<span class="comment">%</span>
-<span class="comment">% ------------------------------------------------------------------------</span>
-<span class="comment">%</span>
-</pre><h2 id="5">Rotated Cube</h2><p>This section will test out our roll, pitch and yaw matrix to see if we can get a cube that is properly rotated</p><pre class="codeinput">roll = 0; <span class="comment">% X Rotation</span>
+roll = 0; <span class="comment">% X Rotation</span>
 pitch = 0; <span class="comment">% Y Rotation</span>
 yaw = 10; <span class="comment">% Z Rotation</span>
 
-CubeOrientation = struct(<span class="string">'Roll'</span>, roll, <span class="string">'Pitch'</span>, pitch, <span class="string">'Yaw'</span>, yaw);
+rot_matrix = angle2dcm(deg2rad(roll), deg2rad(pitch), deg2rad(yaw), <span class="string">'XYZ'</span>);
+</pre><h2 id="5">Rotated Cube</h2><p>This section will test out our roll, pitch and yaw matrix to see if we can get a cube that is properly rotated</p><pre class="codeinput">CubeOrientation = struct(<span class="string">'Roll'</span>, roll, <span class="string">'Pitch'</span>, pitch, <span class="string">'Yaw'</span>, yaw);
 disp(<span class="string">'CURRENT CUBE ORIENTATION'</span>);
 disp(CubeOrientation);
-
-rot_matrix = xyz_rot(roll, pitch, yaw);
 
 north_x_rot = rot_matrix * north_x;
 north_y_rot = rot_matrix * north_y;
@@ -207,12 +180,12 @@ CubeFlux = struct(<span class="string">'NorthX'</span>, -CubeArea * dot(Sun_Flux
 disp(CubeFlux);
 </pre><pre class="codeoutput">LIGHT FLUX RECEIVED AT EACH CUBE FACE
 (NEGATIVE VALUES HERE ARE PRESENTED FOR DIAGNOSTIC PURPOSES)
-    NorthX: -3.939231012048832
-    NorthY: 0.694592710667721
-    NorthZ: 0
-    SouthX: 3.939231012048832
-    SouthY: -0.694592710667721
-    SouthZ: 0
+    NorthX: 9.685830130167169
+    NorthY: -3.313520555160169e+02
+    NorthZ: -28
+    SouthX: -9.685830130167169
+    SouthY: 3.313520555160169e+02
+    SouthZ: 28
 
 </pre><h2 id="7">Get Angles</h2><p>This portion of the code gets the angle associated with each dot product in an attempt to reconstruct the roll, pitch and yaw.</p><pre class="codeinput">Max_Flux = CubeArea * norm(Sun_Flux);
 
@@ -226,12 +199,12 @@ CubeAngles = struct(<span class="string">'NorthX'</span>, acosd(CubeFlux.NorthX/
 
 disp(CubeAngles);
 </pre><pre class="codeoutput">COMPUTE ANGLES FROM CUBE FACE TO FLUX VECTOR
-    NorthX: 1.700000000000000e+02
-    NorthY: 80
-    NorthZ: 90
-    SouthX: 10.000000000000012
-    SouthY: 9.999999999999999e+01
-    SouthZ: 90
+    NorthX: 88.331593096686532
+    NorthY: 1.748904680507873e+02
+    NorthZ: 94.828095794854676
+    SouthX: 91.668406903313453
+    SouthY: 5.109531949212661
+    SouthZ: 85.171904205145324
 
 </pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2020b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
@@ -239,8 +212,8 @@ disp(CubeAngles);
 %
 % REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-
 %
-% Authors:  Sergio Ribeiro, Rohith Yerrabelli
-% Date:     26-APR-2022
+% Authors:  Sergio Ribeiro
+% Date:     07-MAY-2022
 % Class:    ECE 580 Small Satellite Design
 %
 % REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-
@@ -267,7 +240,7 @@ format long
 % constant vector value at all points in space around the cube. The flux
 % value is expressed in W/m^2
 
-Sun_Flux = [1; 0; 0];
+Sun_Flux = [12; 82; 7];
 
 SunFluxStruct = struct('SunFluxX', Sun_Flux(1), 'SunFluxY', Sun_Flux(2), ...
     'SunFluxZ', Sun_Flux(3));
@@ -319,54 +292,26 @@ rotate3d
 % In order to simulate the cube turning in different orientations we need
 % to specify how it turns about the three axes by degrees. These changes
 % are referred to as 'pitch', 'roll' and 'yaw'. Yaw is rotation about the
-% z-axis in a clockwise fashion. Pitch is a rotation about the
-% y-axis in a clockwise fashion. Roll is a rotation about the x-axis
-% in a clockwise fashion. Here we define these standard matrices to
-% compute these rotations.
+% z-axis in a counter-clockwise fashion. Pitch is a rotation about the
+% y-axis in a counter-clockwise fashion. Roll is a rotation about the x-axis
+% in a counter-clockwise fashion.
 
-%
-% REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH
-%
-% DO NOT MODIFY THIS SECTION / STANDARD ROTATION MATRICES
-%
-% REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH
-%
-% Roll Matrix
-x_rot = @(theta)([1, 0, 0; ...
-    0, cosd(theta), -sind(theta); ...
-    0, sind(theta), cosd(theta)]);
-
-% Pitch Matrix
-y_rot = @(theta)([cosd(theta), 0, sind(theta); ...
-    0, 1, 0; ...
-    -sind(theta), 0, cosd(theta)]);
-
-% Yaw Matrix
-z_rot = @(theta)([cosd(theta), -sind(theta), 0; ...
-    sind(theta), cosd(theta), 0; ...
-   0, 0, 1]);
-
-% Combined Roll, Pitch, Yaw matrix
-xyz_rot = @(theta_x, theta_y, theta_z)(x_rot(theta_x) * y_rot (theta_y) * ...
-    z_rot(theta_z));
-
-%
-% REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH
-%
-
-%% Rotated Cube
-% This section will test out our roll, pitch and yaw matrix to see if we
-% can get a cube that is properly rotated
+% Make use of MATLABs built in DCM (Direction Cosine Matrix) to compute the
+% rotation matrix and specify the rotation sequence (i.e. XYZ, ZYX etc.)
 
 roll = 0; % X Rotation
 pitch = 0; % Y Rotation
 yaw = 10; % Z Rotation
 
+rot_matrix = angle2dcm(deg2rad(roll), deg2rad(pitch), deg2rad(yaw), 'XYZ');
+
+%% Rotated Cube
+% This section will test out our roll, pitch and yaw matrix to see if we
+% can get a cube that is properly rotated
+
 CubeOrientation = struct('Roll', roll, 'Pitch', pitch, 'Yaw', yaw);
 disp('CURRENT CUBE ORIENTATION');
 disp(CubeOrientation);
-
-rot_matrix = xyz_rot(roll, pitch, yaw);
 
 north_x_rot = rot_matrix * north_x;
 north_y_rot = rot_matrix * north_y;

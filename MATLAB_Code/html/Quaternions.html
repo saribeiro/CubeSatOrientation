@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Quaternions</title><meta name="generator" content="MATLAB 9.9"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-05-03"><meta name="DC.source" content="Quaternions.m"><style type="text/css">
+      --><title>Quaternions</title><meta name="generator" content="MATLAB 9.9"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-05-07"><meta name="DC.source" content="Quaternions.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -67,7 +67,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">ECE 580 Project, Quaternion Examples</a></li><li><a href="#2">Commutative Property does not Apply for Quaternions</a></li><li><a href="#3">Quaternion Rotation of Points</a></li><li><a href="#4">Define a Flat Polygon to Rotate</a></li></ul></div><h2 id="1">ECE 580 Project, Quaternion Examples</h2><p>-------------------------------------------------------------------------</p><p>Authors:  Sergio Ribeiro, Rohith Yerrabelli Date:     26-APR-2022 Class:    ECE 580 Small Satellite Design</p><p>-------------------------------------------------------------------------</p><p>The purpose of this code is to test out MATLAB quaternion capabilities to use for future work on this project. MATLAB has built in quaternion capabilities specifically related to rotation problems.</p><p>-------------------------------------------------------------------------</p><pre class="codeinput">clearvars;
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">ECE 580 Project, Quaternion Examples</a></li><li><a href="#2">Commutative Property does not Apply for Quaternions</a></li><li><a href="#3">Quaternion Rotation of Points</a></li><li><a href="#4">Define a Flat Polygon to Rotate</a></li></ul></div><h2 id="1">ECE 580 Project, Quaternion Examples</h2><p>-------------------------------------------------------------------------</p><p>Authors:  Sergio Ribeiro Date:     07-MAY-2022 Class:    ECE 580 Small Satellite Design</p><p>-------------------------------------------------------------------------</p><p>The purpose of this code is to test out MATLAB quaternion capabilities to use for future work on this project. MATLAB has built in quaternion capabilities specifically related to rotation problems.</p><p>-------------------------------------------------------------------------</p><pre class="codeinput">clearvars;
 clc;
 clf;
 format <span class="string">long</span>;
@@ -76,28 +76,56 @@ q2 = quaternion(2, 1, 5, 1);
 
 q_12 = q1 * q2;
 q_21 = q2 * q1;
-disp(<span class="string">'QUATERNIONS MULTIPLICATION IS NOT COMMUTATIVE'</span>);
+fprintf(<span class="string">'QUATERNIONS MULTIPLICATION IS NOT COMMUTATIVE\n\n'</span>);
+fprintf(<span class="string">'q1 = '</span>);
+disp(q1);
+fprintf(<span class="string">'q2 = '</span>);
+disp(q2);
+fprintf(<span class="string">'q1 * q2 = '</span>);
 disp(q_12);
+fprintf(<span class="string">'q2 * q1 = '</span>);
 disp(q_21);
 </pre><pre class="codeoutput">QUATERNIONS MULTIPLICATION IS NOT COMMUTATIVE
 
+q1 = 
+     3 + 5i + 1j + 4k
+
+q2 = 
+     2 + 1i + 5j + 1k
+
+q1 * q2 = 
      -8 -  6i + 16j + 35k
 
-
+q2 * q1 = 
      -8 + 32i + 18j - 13k
 
 </pre><h2 id="3">Quaternion Rotation of Points</h2><p>We will build a quaternion rotation system. We need to define the unit vector which will describe the axis of rotation and an angle which will describe the angle by which we rotate around such a defined axis.</p><pre class="codeinput"><span class="comment">% Define a rotation axis and normalize it to a unit vector</span>
+fprintf(<span class="string">'ROTATION AXIS VECTOR\n'</span>);
 rot_axis = [1, 1, 1];
 rot_axis = rot_axis/norm(rot_axis);
+fprintf(<span class="string">'%2.4fi + %2.4fj + %2.4fk\n\n'</span>, <span class="keyword">...</span>
+    rot_axis(1), rot_axis(2), rot_axis(3));
 
 <span class="comment">% Define our angle of rotation in degrees</span>
-rot_angle = 30;
+rot_angle = 10;
+fprintf(<span class="string">'ROTATION ANGLE: %2.4f\n\n'</span>, rot_angle);
 
 <span class="comment">% Compute the resulting quaternion associated with this rotation</span>
 q_rot = quaternion(cosd(rot_angle/2), <span class="keyword">...</span>
     rot_axis(1) * sind(rot_angle/2), <span class="keyword">...</span>
     rot_axis(2) * sind(rot_angle/2), <span class="keyword">...</span>
     rot_axis(3) * sind(rot_angle/2));
+fprintf(<span class="string">'ROTATION QUATERNION:\n'</span>);
+disp(q_rot);
+</pre><pre class="codeoutput">ROTATION AXIS VECTOR
+0.5774i + 0.5774j + 0.5774k
+
+ROTATION ANGLE: 10.0000
+
+ROTATION QUATERNION:
+
+      0.996194698091746 + 0.0503193915367822i + 0.0503193915367822j + 0.0503193915367822k
+
 </pre><h2 id="4">Define a Flat Polygon to Rotate</h2><p>In this section we will define a simple polygon shape to show how quaternion rotation works</p><pre class="codeinput">solid_verts = 0.4 * [1, 1, 1; -1, 1, 1; 1, 1, -1; -1, 1, -1; <span class="keyword">...</span>
        1, -1, 1; -1, -1, 1; 1, -1, -1; -1, -1, -1];
 solid_faces = [1, 2, 4, 3; 5, 6, 8, 7; <span class="keyword">...</span>
@@ -112,7 +140,7 @@ hold <span class="string">on</span>
 quiver3(0, 0, 0, rot_axis(1), rot_axis(2), rot_axis(3), <span class="string">'LineWidth'</span>, 1.5);
 text(rot_axis(1), rot_axis(2), rot_axis(3), <span class="string">'Rotation Axis'</span>);
 patch(<span class="string">'Vertices'</span>, solid_verts, <span class="string">'Faces'</span>, solid_faces, <span class="keyword">...</span>
-      <span class="string">'FaceVertexCData'</span>, copper(6), <span class="string">'FaceColor'</span>, <span class="string">'flat'</span>, <span class="keyword">...</span>
+      <span class="string">'FaceVertexCData'</span>, hsv(6), <span class="string">'FaceColor'</span>, <span class="string">'flat'</span>, <span class="keyword">...</span>
       <span class="string">'FaceAlpha'</span>, 0.2)
 axis([-1, 1, -1, 1, -1, 1]);
 title(<span class="string">'Cube in Original Position'</span>, <span class="string">'interpreter'</span>, <span class="string">'latex'</span>);
@@ -147,7 +175,7 @@ hold <span class="string">on</span>
 quiver3(0, 0, 0, rot_axis(1), rot_axis(2), rot_axis(3), <span class="string">'LineWidth'</span>, 1.5);
 text(rot_axis(1), rot_axis(2), rot_axis(3), <span class="string">'Rotation Axis'</span>);
 patch(<span class="string">'Vertices'</span>, rot_verts, <span class="string">'Faces'</span>, rot_faces, <span class="keyword">...</span>
-      <span class="string">'FaceVertexCData'</span>, copper(6), <span class="string">'FaceColor'</span>, <span class="string">'flat'</span>, <span class="keyword">...</span>
+      <span class="string">'FaceVertexCData'</span>, hsv(6), <span class="string">'FaceColor'</span>, <span class="string">'flat'</span>, <span class="keyword">...</span>
       <span class="string">'FaceAlpha'</span>, 0.2)
 axis([-1, 1, -1, 1, -1, 1]);
 title({<span class="string">'Cube Rotated around Vector by '</span>, <span class="keyword">...</span>
@@ -158,14 +186,25 @@ zlabel(<span class="string">'Z-Axis'</span>);
 view(3)
 axis <span class="string">vis3d</span>
 rotate3d
+
+
+<span class="comment">% Verify the quaternion rotation function built into MATLAB performs as</span>
+<span class="comment">% expected by comparing it to the mathematical definition of quaternion</span>
+<span class="comment">% rotation</span>
+
+r = [3, 4, 5];
+q = quaternion([0, r]);
+
+r_rot1 = quatrotate(compact(q_rot), r);
+r_rot2 = compact(q_rot * q * conj(q_rot));
 </pre><img vspace="5" hspace="5" src="Quaternions_02.png" alt=""> <img vspace="5" hspace="5" src="Quaternions_03.png" alt=""> <p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2020b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% ECE 580 Project, Quaternion Examples
 %
 % REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-
 %
-% Authors:  Sergio Ribeiro, Rohith Yerrabelli
-% Date:     26-APR-2022
+% Authors:  Sergio Ribeiro
+% Date:     07-MAY-2022
 % Class:    ECE 580 Small Satellite Design
 %
 % REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-
@@ -193,8 +232,14 @@ q2 = quaternion(2, 1, 5, 1);
 
 q_12 = q1 * q2;
 q_21 = q2 * q1;
-disp('QUATERNIONS MULTIPLICATION IS NOT COMMUTATIVE');
+fprintf('QUATERNIONS MULTIPLICATION IS NOT COMMUTATIVE\n\n');
+fprintf('q1 = ');
+disp(q1);
+fprintf('q2 = ');
+disp(q2);
+fprintf('q1 * q2 = ');
 disp(q_12);
+fprintf('q2 * q1 = ');
 disp(q_21);
 
 
@@ -204,17 +249,23 @@ disp(q_21);
 % describe the angle by which we rotate around such a defined axis.
 
 % Define a rotation axis and normalize it to a unit vector
+fprintf('ROTATION AXIS VECTOR\n');
 rot_axis = [1, 1, 1];
 rot_axis = rot_axis/norm(rot_axis);
+fprintf('%2.4fi + %2.4fj + %2.4fk\n\n', ...
+    rot_axis(1), rot_axis(2), rot_axis(3));
 
 % Define our angle of rotation in degrees
-rot_angle = 30;
+rot_angle = 10;
+fprintf('ROTATION ANGLE: %2.4f\n\n', rot_angle);
 
 % Compute the resulting quaternion associated with this rotation
 q_rot = quaternion(cosd(rot_angle/2), ...
     rot_axis(1) * sind(rot_angle/2), ...
     rot_axis(2) * sind(rot_angle/2), ...
     rot_axis(3) * sind(rot_angle/2));
+fprintf('ROTATION QUATERNION:\n');
+disp(q_rot);
 
 
 %% Define a Flat Polygon to Rotate
@@ -235,7 +286,7 @@ hold on
 quiver3(0, 0, 0, rot_axis(1), rot_axis(2), rot_axis(3), 'LineWidth', 1.5);
 text(rot_axis(1), rot_axis(2), rot_axis(3), 'Rotation Axis');
 patch('Vertices', solid_verts, 'Faces', solid_faces, ...
-      'FaceVertexCData', copper(6), 'FaceColor', 'flat', ...
+      'FaceVertexCData', hsv(6), 'FaceColor', 'flat', ...
       'FaceAlpha', 0.2)
 axis([-1, 1, -1, 1, -1, 1]);
 title('Cube in Original Position', 'interpreter', 'latex');
@@ -270,7 +321,7 @@ hold on
 quiver3(0, 0, 0, rot_axis(1), rot_axis(2), rot_axis(3), 'LineWidth', 1.5);
 text(rot_axis(1), rot_axis(2), rot_axis(3), 'Rotation Axis');
 patch('Vertices', rot_verts, 'Faces', rot_faces, ...
-      'FaceVertexCData', copper(6), 'FaceColor', 'flat', ...
+      'FaceVertexCData', hsv(6), 'FaceColor', 'flat', ...
       'FaceAlpha', 0.2)
 axis([-1, 1, -1, 1, -1, 1]);
 title({'Cube Rotated around Vector by ', ...
@@ -281,6 +332,17 @@ zlabel('Z-Axis');
 view(3)
 axis vis3d
 rotate3d
+
+
+% Verify the quaternion rotation function built into MATLAB performs as
+% expected by comparing it to the mathematical definition of quaternion
+% rotation
+
+r = [3, 4, 5];
+q = quaternion([0, r]);
+
+r_rot1 = quatrotate(compact(q_rot), r);
+r_rot2 = compact(q_rot * q * conj(q_rot));
 
 ##### SOURCE END #####
 --></body></html>

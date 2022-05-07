@@ -2,8 +2,8 @@
 %
 % -------------------------------------------------------------------------
 %
-% Authors:  Sergio Ribeiro, Rohith Yerrabelli
-% Date:     26-APR-2022
+% Authors:  Sergio Ribeiro
+% Date:     07-MAY-2022
 % Class:    ECE 580 Small Satellite Design
 %
 % -------------------------------------------------------------------------
@@ -24,26 +24,6 @@ clearvars
 clc
 clf
 format long
-
-%% Rotation Matrices for Roll, Pitch and Yaw
-% Roll Matrix
-x_rot = @(theta)([1, 0, 0; ...
-    0, cosd(theta), -sind(theta); ...
-    0, sind(theta), cosd(theta)]);
-
-% Pitch Matrix
-y_rot = @(theta)([cosd(theta), 0, sind(theta); ...
-    0, 1, 0; ...
-    -sind(theta), 0, cosd(theta)]);
-
-% Yaw Matrix
-z_rot = @(theta)([cosd(theta), -sind(theta), 0; ...
-    sind(theta), cosd(theta), 0; ...
-   0, 0, 1]);
-
-% Combined Roll, Pitch, Yaw matrix
-xyz_rot = @(theta_x, theta_y, theta_z)(x_rot(theta_x) * y_rot (theta_y) * ...
-    z_rot(theta_z));
 
 %% Calculate Flux Based on Spacecraft Orientation
 % Describe the origin as well as the vectors describing each cubesat face
@@ -82,7 +62,7 @@ Diode_SouthY = [];
 Diode_SouthZ = [];
 
 roll_start = 0;
-pitch_start = 30;
+pitch_start = 0;
 yaw_start = 0;
 
 % Print output data results to a file
@@ -95,8 +75,12 @@ fprintf(file_ID, ...
 
 for i = angle_start:angle_step:angle_stop
 
-% Rotate these by a specified roll, pitch and yaw 
-rot_matrix = xyz_rot(roll_start, pitch_start + i, yaw_start);
+% Rotate these by a specified roll, pitch and yaw
+% Use MATLABs built in DCM (direction cosine matrix) functionality
+
+rot_matrix = angle2dcm(deg2rad(roll_start), ...
+    deg2rad(pitch_start + i), ...
+    deg2rad(yaw_start), 'XYZ');
 
 % Calculate the rotated vectors
 rot_north_x = rot_matrix * north_x;

@@ -2,8 +2,8 @@
 %
 % -------------------------------------------------------------------------
 %
-% Authors:  Sergio Ribeiro, Rohith Yerrabelli
-% Date:     26-APR-2022
+% Authors:  Sergio Ribeiro
+% Date:     07-MAY-2022
 % Class:    ECE 580 Small Satellite Design
 %
 % -------------------------------------------------------------------------
@@ -25,27 +25,6 @@ clc
 clf
 format long
 
-%% Rotation Matrices for Roll, Pitch and Yaw
-% Roll Matrix
-x_rot = @(theta)([1, 0, 0; ...
-    0, cosd(theta), -sind(theta); ...
-    0, sind(theta), cosd(theta)]);
-
-% Pitch Matrix
-y_rot = @(theta)([cosd(theta), 0, sind(theta); ...
-    0, 1, 0; ...
-    -sind(theta), 0, cosd(theta)]);
-
-% Yaw Matrix
-z_rot = @(theta)([cosd(theta), -sind(theta), 0; ...
-    sind(theta), cosd(theta), 0; ...
-   0, 0, 1]);
-
-% Combined Roll, Pitch, Yaw matrix
-xyz_rot = @(theta_x, theta_y, theta_z)(x_rot(theta_x) * y_rot (theta_y) * ...
-    z_rot(theta_z));
-
-
 %% Calculating Roll, Pitch and Yaw based on Simulated Diode Response
 % In this section we will pull the simulated diode responses from the
 % "ComputeDiodeResponse.m" code to attempt to figure out the cubesat
@@ -59,7 +38,7 @@ xyz_rot = @(theta_x, theta_y, theta_z)(x_rot(theta_x) * y_rot (theta_y) * ...
 % We will use the following convention to name the octants of the three
 % dimensional space.
 
-file_name = 'YawAngleChange.csv';
+file_name = 'PitchAngleChange_3.csv';
 file_path = [fileparts(pwd), '\Data\', file_name];
 DataTable = readtable(file_path, 'HeaderLines', 12);
 DataTable.Properties.VariableNames = {'Nx', 'Ny', 'Nz', ...
