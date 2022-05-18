@@ -61,27 +61,50 @@ Diode_SouthX = [];
 Diode_SouthY = [];
 Diode_SouthZ = [];
 
-roll_start = 0;
-pitch_start = 0;
-yaw_start = 0;
+% Prompt the user to enter in initial cube orientation in the roll, pitch
+% and yaw angles
+roll_start = input('Specify the starting roll angle (degrees): ');
+pitch_start = input('Specify the starting pitch angle (degrees): ');
+yaw_start = input('Specify the starting yaw angle (degrees): ');
 
 % Print output data results to a file
-file_name = 'PitchAngleChange_3.csv';
+% Prompt the user for an output filename
+file_name = input('Please name the file: ', 's');
+file_name = [file_name, '.csv'];
 file_path = [fileparts(pwd), '\Data\', file_name];
 file_ID = fopen(file_path, 'w');
 
 fprintf(file_ID, ...
     'Nx, Ny, Nz, Sx, Sy, Sz, Roll, Pitch, Yaw, SunFluxX, SunFluxY, SunFluxZ\n');
 
+
+% Ask the user if they want to step the roll, pitch or yaw angle
+angle2step = input('Which parameter would you like to step?\nRoll (0)\nPitch (1)\nYaw (2)\nChoice: ');
+
+
 for i = angle_start:angle_step:angle_stop
 
 % Rotate these by a specified roll, pitch and yaw
 % Use MATLABs built in DCM (direction cosine matrix) functionality
 
-rot_matrix = angle2dcm(deg2rad(roll_start), ...
-    deg2rad(pitch_start + i), ...
-    deg2rad(yaw_start), 'XYZ');
+% Rotate the specified parameter
 
+if angle2step == 0
+    rot_matrix = angle2dcm(deg2rad(roll_start + i), ...
+        deg2rad(pitch_start), ...
+        deg2rad(yaw_start), 'XYZ');
+elseif angle2step == 1
+    rot_matrix = angle2dcm(deg2rad(roll_start), ...
+        deg2rad(pitch_start + i), ...
+        deg2rad(yaw_start), 'XYZ');
+elseif angle2step == 2
+    rot_matrix = angle2dcm(deg2rad(roll_start), ...
+        deg2rad(pitch_start), ...
+        deg2rad(yaw_start + i), 'XYZ');
+else
+    error('ERROR: User selected an invalid choice');
+end
+    
 % Calculate the rotated vectors
 rot_north_x = rot_matrix * north_x;
 rot_north_y = rot_matrix * north_y;
@@ -122,8 +145,22 @@ fprintf(file_ID, '%5.8f, %5.8f, %5.8f, %5.8f, %5.8f, %5.8f, ', ...
     CubeFlux.NorthX, CubeFlux.NorthY, CubeFlux.NorthZ, ...
     CubeFlux.SouthX, CubeFlux.SouthY, CubeFlux.SouthZ);
 
-fprintf(file_ID, '%5.8f, %5.8f, %5.8f, ', roll_start, ...
-    pitch_start + i, yaw_start);
+
+% Print the yaw pitch and roll with the csv file
+
+if angle2step == 0
+    fprintf(file_ID, '%5.8f, %5.8f, %5.8f, ', roll_start + i, ...
+        pitch_start, yaw_start);
+elseif angle2step == 1
+    fprintf(file_ID, '%5.8f, %5.8f, %5.8f, ', roll_start, ...
+        pitch_start + i, yaw_start);
+elseif angle2step == 2
+    fprintf(file_ID, '%5.8f, %5.8f, %5.8f, ', roll_start, ...
+        pitch_start, yaw_start + i);
+else
+    error('ERROR: User selected an invalid choice');
+end
+    
 
 fprintf(file_ID, '%5.8f, %5.8f, %5.8f\n', ...
     Sun_Flux(1), Sun_Flux(2), Sun_Flux(3));
